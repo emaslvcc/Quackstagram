@@ -220,48 +220,26 @@ public class ImageUploadUI extends JFrame {
 }
 
    private JPanel createNavigationPanel() {
-       // Create and return the navigation panel
-        // Navigation Bar
-        JPanel navigationPanel = new JPanel();
-        navigationPanel.setBackground(new Color(249, 249, 249));
-        navigationPanel.setLayout(new BoxLayout(navigationPanel, BoxLayout.X_AXIS));
-        navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    // Navigation Bar
+    JPanel navigationPanel = new JPanel();
+    navigationPanel.setBackground(new Color(249, 249, 249));
+    navigationPanel.setLayout(new BoxLayout(navigationPanel, BoxLayout.X_AXIS));
+    navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        navigationPanel.add(createIconButton("img/icons/home.png", "home"));
-        navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/search.png","explore"));
-        navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/add.png"," "));
-        navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/heart.png","notification"));
-        navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/profile.png", "profile"));
+    // Create buttons with IconButtonCreator and action listeners
+    navigationPanel.add(IconButtonCreator.createIconButton("img/icons/home.png", "home", e -> openHomeUI()));
+    navigationPanel.add(Box.createHorizontalGlue());
+    navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png", "explore", e -> exploreUI()));
+    navigationPanel.add(Box.createHorizontalGlue());
+    //navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png", "add", e -> ));
+    navigationPanel.add(Box.createHorizontalGlue());
+    navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png", "notification", e -> notificationsUI()));
+    navigationPanel.add(Box.createHorizontalGlue());
+    navigationPanel.add(IconButtonCreator.createIconButton("img/icons/profile.png", "profile", e -> openProfileUI()));
 
-        return navigationPanel;
-   }
+    return navigationPanel;
+}
 
-
-    private JButton createIconButton(String iconPath, String buttonType) {
-        ImageIcon iconOriginal = new ImageIcon(iconPath);
-        Image iconScaled = iconOriginal.getImage().getScaledInstance(NAV_ICON_SIZE, NAV_ICON_SIZE, Image.SCALE_SMOOTH);
-        JButton button = new JButton(new ImageIcon(iconScaled));
-        button.setBorder(BorderFactory.createEmptyBorder());
-        button.setContentAreaFilled(false);
- 
-        // Define actions based on button type
-        if ("home".equals(buttonType)) {
-            button.addActionListener(e -> openHomeUI());
-        } else if ("profile".equals(buttonType)) {
-            button.addActionListener(e -> openProfileUI());
-        } else if ("notification".equals(buttonType)) {
-            button.addActionListener(e -> notificationsUI());
-        } else if ("explore".equals(buttonType)) {
-            button.addActionListener(e -> exploreUI());
-        }
-        return button;
- 
-        
-    }
  
     private void openProfileUI() {
         // Open InstagramProfileUI frame
