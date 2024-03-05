@@ -231,7 +231,7 @@ public class ImageUploadUI extends JFrame {
     navigationPanel.add(Box.createHorizontalGlue());
     navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png", "explore", e -> exploreUI()));
     navigationPanel.add(Box.createHorizontalGlue());
-    //navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png", "add", e -> ));
+    navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png", "add",e -> {} ));
     navigationPanel.add(Box.createHorizontalGlue());
     navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png", "notification", e -> notificationsUI()));
     navigationPanel.add(Box.createHorizontalGlue());

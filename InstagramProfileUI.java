@@ -331,15 +331,15 @@ headerPanel.add(profileNameAndBioPanel);
         navigationPanel.setLayout(new BoxLayout(navigationPanel, BoxLayout.X_AXIS));
         navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        navigationPanel.add(createIconButton("img/icons/home.png", "home"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/home.png", "home", e -> openHomeUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/search.png","explore"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png","explore", e -> exploreUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/add.png","add"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> ImageUploadUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/heart.png","notification"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png","notification", e -> notificationsUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/profile.png", "profile"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/profile.png", "profile", e -> {}));
 
         return navigationPanel;
 
@@ -406,30 +406,6 @@ private void initializeImageGrid() {
         label.setFont(new Font("Arial", Font.BOLD, 12));
         label.setForeground(Color.BLACK);
         return label;
-    }
-
-    private JButton createIconButton(String iconPath, String buttonType) {
-        ImageIcon iconOriginal = new ImageIcon(iconPath);
-        Image iconScaled = iconOriginal.getImage().getScaledInstance(NAV_ICON_SIZE, NAV_ICON_SIZE, Image.SCALE_SMOOTH);
-        JButton button = new JButton(new ImageIcon(iconScaled));
-        button.setBorder(BorderFactory.createEmptyBorder());
-        button.setContentAreaFilled(false);
-    
-        // Define actions based on button type
-        if ("home".equals(buttonType)) {
-            button.addActionListener(e -> openHomeUI());
-        } else if ("profile".equals(buttonType)) {
-            //
-        } else if ("notification".equals(buttonType)) {
-            button.addActionListener(e -> notificationsUI());
-        } else if ("explore".equals(buttonType)) {
-            button.addActionListener(e -> exploreUI());
-        } else if ("add".equals(buttonType)) {
-            button.addActionListener(e -> ImageUploadUI());
-        }
-        return button;
-    
-        
     }
  
     private void ImageUploadUI() {
