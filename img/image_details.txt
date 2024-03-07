@@ -6,3 +6,5 @@ ImageID: Zara_1, Username: Zara, Bio: Lost my map I have. Oops., Timestamp: 2023
 ImageID: Zara_2, Username: Zara, Bio: Yoga with Yoda, Timestamp: 2023-12-17 19:25:03, Likes: 0
 ImageID: Mystar_1, Username: Mystar, Bio: Cookies gone? , Timestamp: 2023-12-17 19:26:50, Likes: 0
 ImageID: Mystar_2, Username: Mystar, Bio: In my soup a fly is., Timestamp: 2023-12-17 19:27:24, Likes: 0
+ImageID: Darius_1, Username: Darius, Bio: hello, Timestamp: 2024-02-29 12:17:00, Likes: 0
+ImageID: Darius_2, Username: Darius, Bio: bob, Timestamp: 2024-02-29 12:25:25, Likes: 0
