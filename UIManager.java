@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,15 +24,15 @@ public abstract class UIManager extends JFrame {
         navigationPanel.setLayout(new BoxLayout(navigationPanel, BoxLayout.X_AXIS));
         navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        navigationPanel.add(createIconButton("img/icons/home.png", "home"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/home.png", "home", e -> openProfileUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/search.png","explore"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png","explore", e -> exploreUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/add.png","add"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> imageUploadUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/heart.png","notification"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png","notification", e -> notificationsUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(createIconButton("img/icons/profile.png", "profile"));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/profile.png", "profile", e -> openProfileUI()));
 
         return navigationPanel;
 
@@ -76,5 +77,12 @@ public abstract class UIManager extends JFrame {
         this.dispose();
         ExploreUI explore = new ExploreUI();
         explore.setVisible(true);
+    }
+
+    protected void imageUploadUI() {
+        // Open InstagramProfileUI frame
+        this.dispose();
+        ImageUploadUI upload = new ImageUploadUI();
+        upload.setVisible(true);
     }
 }
