@@ -1,4 +1,7 @@
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,14 +11,26 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public abstract class UIManager extends JFrame {
 
-    //methods with different implementatoins
     public abstract void initializeUI();
-    public abstract void createIconButton();
-    public abstract void createHeaderPanel();
+    
+    protected JPanel createHeaderPanel(){
+
+        // Header Panel (reuse from InstagramProfileUI or customize for home page)
+         // Header with the Register label
+         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+         headerPanel.setBackground(new Color(51, 51, 51)); // Set a darker background for the header
+         JLabel lblRegister = new JLabel(" Upload Image 🐥");
+         lblRegister.setFont(new Font("Arial", Font.BOLD, 16));
+         lblRegister.setForeground(Color.WHITE); // Set the text color to white
+         headerPanel.add(lblRegister);
+         headerPanel.setPreferredSize(new Dimension(WIDTH, 40)); // Give the header a fixed height
+         return headerPanel;
+    }
 
     protected JPanel createNavigationPanel() {
         // Navigation Bar

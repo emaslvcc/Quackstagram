@@ -1,16 +1,38 @@
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ImageUploadUI extends JFrame {
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+public class ImageUploadUI extends UIManager {
 
     private static final int WIDTH = 300;
     private static final int HEIGHT = 500;
@@ -29,8 +51,8 @@ public class ImageUploadUI extends JFrame {
         setLayout(new BorderLayout());
         initializeUI();
     }
-
-    private void initializeUI() {
+    @Override
+    public void initializeUI() {
         JPanel headerPanel = createHeaderPanel(); // Reuse the createHeaderPanel method
         JPanel navigationPanel = createNavigationPanel(); // Reuse the createNavigationPanel method
 
@@ -193,8 +215,8 @@ public class ImageUploadUI extends JFrame {
         // For example, save the bio text to a file or database
         JOptionPane.showMessageDialog(this, "Caption saved: " + bioText);
     }
-   
-    private JPanel createHeaderPanel() {
+   @Override
+    protected JPanel createHeaderPanel() {
        
         // Header Panel (reuse from InstagramProfileUI or customize for home page)
          // Header with the Register label
@@ -219,7 +241,7 @@ public class ImageUploadUI extends JFrame {
     return null; // Return null if no username is found
 }
 
-   private JPanel createNavigationPanel() {
+   protected JPanel createNavigationPanel() {
     // Navigation Bar
     JPanel navigationPanel = new JPanel();
     navigationPanel.setBackground(new Color(249, 249, 249));
@@ -241,7 +263,7 @@ public class ImageUploadUI extends JFrame {
 }
 
  
-    private void openProfileUI() {
+    protected void openProfileUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         String loggedInUsername = "";
@@ -259,22 +281,22 @@ public class ImageUploadUI extends JFrame {
         InstagramProfileUI profileUI = new InstagramProfileUI(user);
         profileUI.setVisible(true);
     }
- 
-     private void notificationsUI() {
+     @Override
+     protected void notificationsUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         NotificationsUI notificationsUI = new NotificationsUI();
         notificationsUI.setVisible(true);
     }
- 
-    private void openHomeUI() {
+    @Override
+    protected void openHomeUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         QuakstagramHomeUI homeUI = new QuakstagramHomeUI();
         homeUI.setVisible(true);
     }
- 
-    private void exploreUI() {
+    @Override
+    protected void exploreUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         ExploreUI explore = new ExploreUI();
