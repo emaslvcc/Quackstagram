@@ -122,7 +122,7 @@ public class ExploreUI extends JFrame {
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png","explore", e -> {}));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> ImageUploadUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> imageUploadUI()));
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png","notification", e -> notificationsUI()));
         navigationPanel.add(Box.createHorizontalGlue());
@@ -254,7 +254,7 @@ topPanel.add(timeLabel, BorderLayout.EAST);
 }
 
 
-private void ImageUploadUI() {
+private void imageUploadUI() {
     // Open InstagramProfileUI frame
     this.dispose();
     ImageUploadUI upload = new ImageUploadUI();

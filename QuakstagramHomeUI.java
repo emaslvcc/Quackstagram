@@ -76,7 +76,7 @@ public class QuakstagramHomeUI extends JFrame {
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png","explore", e -> exploreUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> ImageUploadUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> imageUploadUI()));
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png","notification", e -> notificationsUI()));
         navigationPanel.add(Box.createHorizontalGlue());
@@ -375,30 +375,8 @@ private String[][] createSampleData() {
         // Call displayImage with updated postData
         displayImage(postData);
     }
+ 
 
-    private JButton createIconButton(String iconPath, String buttonType) {
-        ImageIcon iconOriginal = new ImageIcon(iconPath);
-        Image iconScaled = iconOriginal.getImage().getScaledInstance(NAV_ICON_SIZE, NAV_ICON_SIZE, Image.SCALE_SMOOTH);
-        JButton button = new JButton(new ImageIcon(iconScaled));
-        button.setBorder(BorderFactory.createEmptyBorder());
-        button.setContentAreaFilled(false);
- 
-        // Define actions based on button type
-        if ("home".equals(buttonType)) {
-            button.addActionListener(e -> openHomeUI());
-        } else if ("profile".equals(buttonType)) {
-            button.addActionListener(e -> openProfileUI());
-        } else if ("notification".equals(buttonType)) {
-            button.addActionListener(e -> notificationsUI());
-        } else if ("explore".equals(buttonType)) {
-            button.addActionListener(e -> exploreUI());
-        } else if ("add".equals(buttonType)) {
-            button.addActionListener(e -> ImageUploadUI());
-        }
-        return button;
- 
-        
-    }
  
     private void openProfileUI() {
         // Open InstagramProfileUI frame
@@ -426,7 +404,7 @@ private String[][] createSampleData() {
         notificationsUI.setVisible(true);
     }
 
-    private void ImageUploadUI() {
+    private void imageUploadUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         ImageUploadUI upload = new ImageUploadUI();

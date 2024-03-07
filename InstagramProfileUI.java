@@ -335,7 +335,7 @@ headerPanel.add(profileNameAndBioPanel);
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png","explore", e -> exploreUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> ImageUploadUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> imageUploadUI()));
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png","notification", e -> notificationsUI()));
         navigationPanel.add(Box.createHorizontalGlue());
@@ -408,7 +408,7 @@ private void initializeImageGrid() {
         return label;
     }
  
-    private void ImageUploadUI() {
+    private void imageUploadUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         ImageUploadUI upload = new ImageUploadUI();

@@ -126,7 +126,7 @@ private String getElapsedTime(String timestamp) {
          navigationPanel.add(Box.createHorizontalGlue());
          navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png","explore", e -> exploreUI()));
          navigationPanel.add(Box.createHorizontalGlue());
-         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> ImageUploadUI()));
+         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> imageUploadUI()));
          navigationPanel.add(Box.createHorizontalGlue());
          navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png","notification", e -> {}));
          navigationPanel.add(Box.createHorizontalGlue());
@@ -136,7 +136,7 @@ private String getElapsedTime(String timestamp) {
     }
 
  
-    private void ImageUploadUI() {
+    private void imageUploadUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         ImageUploadUI upload = new ImageUploadUI();
