@@ -1,6 +1,4 @@
 import javax.swing.*;
-
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -8,10 +6,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.awt.*;
 import java.nio.file.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
