@@ -235,7 +235,6 @@ public class ImageUploadUI extends UIManager {
 
     @Override
     protected void openProfileUI() {
-
         super.openProfileUI();
     }
 

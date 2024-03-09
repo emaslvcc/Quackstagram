@@ -39,17 +39,15 @@ public abstract class UIManager extends JFrame {
         navigationPanel.setLayout(new BoxLayout(navigationPanel, BoxLayout.X_AXIS));
         navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/home.png", "home", e -> openProfileUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/home.png", "home", e -> openHomeUI()));
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png", "explore", e -> exploreUI()));
         navigationPanel.add(Box.createHorizontalGlue());
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png", "add", e -> imageUploadUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel
-                .add(IconButtonCreator.createIconButton("img/icons/heart.png", "notification", e -> notificationsUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png", "notification", e -> notificationsUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel
-                .add(IconButtonCreator.createIconButton("img/icons/profile.png", "profile", e -> openProfileUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/profile.png", "profile", e -> openProfileUI()));
 
         return navigationPanel;
 
