@@ -16,20 +16,20 @@ import javax.swing.JPanel;
 
 public abstract class UIManager extends JFrame {
 
-    public abstract void initializeUI();
-    
-    protected JPanel createHeaderPanel(){
+    protected abstract void initializeUI();
+
+    protected JPanel createHeaderPanel() {
 
         // Header Panel (reuse from InstagramProfileUI or customize for home page)
-         // Header with the Register label
-         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-         headerPanel.setBackground(new Color(51, 51, 51)); // Set a darker background for the header
-         JLabel lblRegister = new JLabel(" Upload Image 🐥");
-         lblRegister.setFont(new Font("Arial", Font.BOLD, 16));
-         lblRegister.setForeground(Color.WHITE); // Set the text color to white
-         headerPanel.add(lblRegister);
-         headerPanel.setPreferredSize(new Dimension(WIDTH, 40)); // Give the header a fixed height
-         return headerPanel;
+        // Header with the Register label
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        headerPanel.setBackground(new Color(51, 51, 51)); // Set a darker background for the header
+        JLabel lblRegister = new JLabel(" Upload Image 🐥");
+        lblRegister.setFont(new Font("Arial", Font.BOLD, 16));
+        lblRegister.setForeground(Color.WHITE); // Set the text color to white
+        headerPanel.add(lblRegister);
+        headerPanel.setPreferredSize(new Dimension(WIDTH, 40)); // Give the header a fixed height
+        return headerPanel;
     }
 
     protected JPanel createNavigationPanel() {
@@ -41,52 +41,53 @@ public abstract class UIManager extends JFrame {
 
         navigationPanel.add(IconButtonCreator.createIconButton("img/icons/home.png", "home", e -> openProfileUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png","explore", e -> exploreUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/search.png", "explore", e -> exploreUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png","add", e -> imageUploadUI()));
+        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/add.png", "add", e -> imageUploadUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/heart.png","notification", e -> notificationsUI()));
+        navigationPanel
+                .add(IconButtonCreator.createIconButton("img/icons/heart.png", "notification", e -> notificationsUI()));
         navigationPanel.add(Box.createHorizontalGlue());
-        navigationPanel.add(IconButtonCreator.createIconButton("img/icons/profile.png", "profile", e -> openProfileUI()));
+        navigationPanel
+                .add(IconButtonCreator.createIconButton("img/icons/profile.png", "profile", e -> openProfileUI()));
 
         return navigationPanel;
 
     }
 
-
     protected void openProfileUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         String loggedInUsername = "";
- 
-         // Read the logged-in user's username from users.txt
-     try (BufferedReader reader = Files.newBufferedReader(Paths.get("data", "users.txt"))) {
-         String line = reader.readLine();
-         if (line != null) {
-             loggedInUsername = line.split(":")[0].trim();
-         }
-     } catch (IOException e) {
-         e.printStackTrace();
-     }
-      User user = new User(loggedInUsername);
+
+        // Read the logged-in user's username from users.txt
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get("data", "users.txt"))) {
+            String line = reader.readLine();
+            if (line != null) {
+                loggedInUsername = line.split(":")[0].trim();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        User user = new User(loggedInUsername);
         InstagramProfileUI profileUI = new InstagramProfileUI(user);
         profileUI.setVisible(true);
     }
- 
-     protected void notificationsUI() {
+
+    protected void notificationsUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         NotificationsUI notificationsUI = new NotificationsUI();
         notificationsUI.setVisible(true);
     }
- 
+
     protected void openHomeUI() {
         // Open InstagramProfileUI frame
         this.dispose();
         QuakstagramHomeUI homeUI = new QuakstagramHomeUI();
         homeUI.setVisible(true);
     }
- 
+
     protected void exploreUI() {
         // Open InstagramProfileUI frame
         this.dispose();
