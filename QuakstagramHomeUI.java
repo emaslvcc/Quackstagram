@@ -62,8 +62,7 @@ public class QuakstagramHomeUI extends UIManager {
     add(cardPanel, BorderLayout.CENTER);
     cardLayout.show(cardPanel, "Home"); // Start with the home view
 
-    // Header Panel (reuse from InstagramProfileUI or customize for home page)
-    // Header with the Register label
+    // Header Panel
     headerPanel = createHeaderPanel("Quackstagram");
     add(headerPanel, BorderLayout.NORTH);
 
@@ -437,30 +436,5 @@ public class QuakstagramHomeUI extends UIManager {
 
     // Call displayImage with updated postData
     displayImage(postData);
-  }
-
-  @Override
-  protected void openProfileUI() {
-    super.openProfileUI();
-  }
-
-  @Override
-  protected void notificationsUI() {
-    super.notificationsUI();
-  }
-
-  @Override
-  protected void imageUploadUI() {
-    super.imageUploadUI();
-  }
-
-  @Override
-  protected void openHomeUI() {
-    super.openHomeUI();
-  }
-
-  @Override
-  protected void exploreUI() {
-    super.exploreUI();
   }
 }

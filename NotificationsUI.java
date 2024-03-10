@@ -142,29 +142,4 @@ public class NotificationsUI extends UIManager {
   protected JPanel createNavigationPanel() {
     return super.createNavigationPanel();
   }
-
-  @Override
-  protected void imageUploadUI() {
-    super.imageUploadUI();
-  }
-
-  @Override
-  protected void openProfileUI() {
-    super.openProfileUI();
-  }
-
-  @Override
-  protected void notificationsUI() {
-    super.notificationsUI();
-  }
-
-  @Override
-  protected void openHomeUI() {
-    super.openHomeUI();
-  }
-
-  @Override
-  protected void exploreUI() {
-    super.exploreUI();
-  }
 }
