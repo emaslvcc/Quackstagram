@@ -60,7 +60,7 @@ public class SignUpUI extends UIManager {
     lblPhoto.setVerticalAlignment(JLabel.CENTER);
     lblPhoto.setIcon(
       new ImageIcon(
-        new ImageIcon("img/logos/DACS.png")
+        new ImageIcon("img/logos/logo.png")
           .getImage()
           .getScaledInstance(80, 80, Image.SCALE_SMOOTH)
       )
