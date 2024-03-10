@@ -1,3 +1,5 @@
+// For future work, to add reactive navigation icons
+
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
