@@ -18,7 +18,6 @@ public abstract class UIManager extends JFrame {
   protected abstract void initializeUI();
 
   protected JPanel createHeaderPanel(String header) {
-    // Header Panel (reuse from InstagramProfileUI or customize for home page)
     // Header with the Register label
     JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     headerPanel.setBackground(new Color(51, 51, 51)); // Set a darker background for the header
