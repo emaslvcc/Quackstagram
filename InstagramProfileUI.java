@@ -381,11 +381,6 @@ public class InstagramProfileUI extends UIManager {
     }
   }
 
-  @Override
-  protected JPanel createNavigationPanel() {
-    return super.createNavigationPanel();
-  }
-
   private void initializeImageGrid() {
     contentPanel.removeAll(); // Clear existing content
     contentPanel.setLayout(new GridLayout(0, 3, 5, 5)); // Grid layout for image grid

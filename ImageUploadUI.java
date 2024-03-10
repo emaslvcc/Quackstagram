@@ -269,9 +269,4 @@ public class ImageUploadUI extends UIManager {
     }
     return null; // Return null if no username is found
   }
-
-  @Override
-  protected JPanel createNavigationPanel() {
-    return super.createNavigationPanel();
-  }
 }

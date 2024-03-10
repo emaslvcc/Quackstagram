@@ -137,9 +137,4 @@ public class NotificationsUI extends UIManager {
     }
     return timeElapsed.toString();
   }
-
-  @Override
-  protected JPanel createNavigationPanel() {
-    return super.createNavigationPanel();
-  }
 }

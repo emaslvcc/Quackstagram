@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-public class QuakstagramHomeUI extends UIManager {
+public class QuackstagramHomeUI extends UIManager {
 
   private static final int WIDTH = 300;
   private static final int HEIGHT = 500;
@@ -42,7 +42,7 @@ public class QuakstagramHomeUI extends UIManager {
   private CardLayout cardLayout;
   private JPanel cardPanel, homePanel, imageViewPanel, headerPanel;
 
-  public QuakstagramHomeUI() {
+  public QuackstagramHomeUI() {
     setTitle("Quakstagram Home");
     setSize(WIDTH, HEIGHT);
     setMinimumSize(new Dimension(WIDTH, HEIGHT));

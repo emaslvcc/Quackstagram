@@ -119,11 +119,6 @@ public class ExploreUI extends UIManager {
     return mainContentPanel;
   }
 
-  @Override
-  protected JPanel createNavigationPanel() {
-    return super.createNavigationPanel();
-  }
-
   private void displayImage(String imagePath) {
     getContentPane().removeAll();
     setLayout(new BorderLayout());
@@ -250,30 +245,5 @@ public class ExploreUI extends UIManager {
 
     revalidate();
     repaint();
-  }
-
-  @Override
-  protected void imageUploadUI() {
-    super.imageUploadUI();
-  }
-
-  @Override
-  protected void openProfileUI() {
-    super.openProfileUI();
-  }
-
-  @Override
-  protected void notificationsUI() {
-    super.notificationsUI();
-  }
-
-  @Override
-  protected void openHomeUI() {
-    super.openHomeUI();
-  }
-
-  @Override
-  protected void exploreUI() {
-    super.exploreUI();
   }
 }
