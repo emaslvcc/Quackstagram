@@ -32,6 +32,7 @@ public class ExploreUI extends UIManager {
   //private static final int NAV_ICON_SIZE = 20; // Size for navigation icons
   private static final int IMAGE_SIZE = WIDTH / 3; // Size for each image in the grid
   private JPanel headerPanel;
+  private String pageName = "Explore";
 
   public ExploreUI() {
     setTitle("Explore");
@@ -46,8 +47,8 @@ public class ExploreUI extends UIManager {
     getContentPane().removeAll(); // Clear existing components
     setLayout(new BorderLayout()); // Reset the layout manager
 
-    headerPanel = createHeaderPanel("Explore"); // Method from your InstagramProfileUI class
-    JPanel navigationPanel = createNavigationPanel(); // Method from your InstagramProfileUI class
+    headerPanel = createHeaderPanel(pageName); // Method from your InstagramProfileUI class
+    JPanel navigationPanel = createNavigationPanel(pageName); // Method from your InstagramProfileUI class
     JPanel mainContentPanel = createMainContentPanel();
 
     // Add panels to the frame
@@ -125,7 +126,7 @@ public class ExploreUI extends UIManager {
 
     // Add the header and navigation panels back
     add(headerPanel, BorderLayout.NORTH);
-    add(createNavigationPanel(), BorderLayout.SOUTH);
+    add(createNavigationPanel(pageName), BorderLayout.SOUTH);
 
     JPanel imageViewerPanel = new JPanel(new BorderLayout());
 
@@ -202,7 +203,7 @@ public class ExploreUI extends UIManager {
 
     // Re-add the header and navigation panels
     add(headerPanel, BorderLayout.NORTH);
-    add(createNavigationPanel(), BorderLayout.SOUTH);
+    add(createNavigationPanel(pageName), BorderLayout.SOUTH);
 
     // Panel for the back button
     JPanel backButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -219,7 +220,7 @@ public class ExploreUI extends UIManager {
       getContentPane().removeAll();
       add(headerPanel, BorderLayout.NORTH);
       add(createMainContentPanel(), BorderLayout.CENTER);
-      add(createNavigationPanel(), BorderLayout.SOUTH);
+      add(createNavigationPanel(pageName), BorderLayout.SOUTH);
       revalidate();
       repaint();
     });

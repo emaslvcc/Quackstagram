@@ -37,6 +37,7 @@ public class ImageUploadUI extends UIManager {
   private JButton saveButton;
   private boolean imageUploaded = false;
   private JPanel headerPanel;
+  private String pageName = "Upload Image";
 
   public ImageUploadUI() {
     setTitle("Upload Image");
@@ -49,8 +50,8 @@ public class ImageUploadUI extends UIManager {
 
   @Override
   public void initializeUI() {
-    headerPanel = createHeaderPanel("Upload Image"); // Reuse the createHeaderPanel method
-    JPanel navigationPanel = createNavigationPanel(); // Reuse the createNavigationPanel method
+    headerPanel = createHeaderPanel(pageName); // Reuse the createHeaderPanel method
+    JPanel navigationPanel = createNavigationPanel(pageName); // Reuse the createNavigationPanel method
 
     // Main content panel
     JPanel contentPanel = new JPanel();

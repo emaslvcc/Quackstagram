@@ -36,6 +36,7 @@ public class InstagramProfileUI extends UIManager {
   private JPanel headerPanel; // Panel for the header
   private JPanel navigationPanel; // Panel for the navigation
   private User currentUser; // User object to store the current user's information
+  private String pageName = "Profile";
 
   public InstagramProfileUI(User user) {
     this.currentUser = user;
@@ -126,7 +127,7 @@ public class InstagramProfileUI extends UIManager {
     setLayout(new BorderLayout());
     contentPanel = new JPanel();
     headerPanel = createProfileHeaderPanel(); // Initialize header panel
-    navigationPanel = createNavigationPanel(); // Initialize navigation panel
+    navigationPanel = createNavigationPanel(pageName); // Initialize navigation panel
 
     initializeUI();
   }
@@ -139,7 +140,7 @@ public class InstagramProfileUI extends UIManager {
     setLayout(new BorderLayout());
     contentPanel = new JPanel();
     headerPanel = createProfileHeaderPanel(); // Initialize header panel
-    navigationPanel = createNavigationPanel(); // Initialize navigation panel
+    navigationPanel = createNavigationPanel(pageName); // Initialize navigation panel
     initializeUI();
   }
 

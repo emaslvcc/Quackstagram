@@ -19,6 +19,7 @@ public class NotificationsUI extends UIManager {
   private static final int HEIGHT = 500;
   // private static final int NAV_ICON_SIZE = 20; // Size for navigation icons
   private JPanel headerPanel;
+  private String pageName = "Notifications";
 
   public NotificationsUI() {
     setTitle("Notifications");
@@ -33,8 +34,8 @@ public class NotificationsUI extends UIManager {
   protected void initializeUI() {
     // Reuse the header and navigation panel creation methods from the
     // InstagramProfileUI class
-    headerPanel = createHeaderPanel("Notifications");
-    JPanel navigationPanel = createNavigationPanel();
+    headerPanel = createHeaderPanel(pageName);
+    JPanel navigationPanel = createNavigationPanel(pageName);
 
     // Content Panel for notifications
     JPanel contentPanel = new JPanel();

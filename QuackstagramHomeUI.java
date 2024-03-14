@@ -41,9 +41,10 @@ public class QuackstagramHomeUI extends UIManager {
   private static final Color LIKE_BUTTON_COLOR = new Color(255, 90, 95); // Color for the like button
   private CardLayout cardLayout;
   private JPanel cardPanel, homePanel, imageViewPanel, headerPanel;
+  private String pageName = "Quackstagram";
 
   public QuackstagramHomeUI() {
-    setTitle("Quakstagram Home");
+    setTitle("Quackstagram Home");
     setSize(WIDTH, HEIGHT);
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -63,51 +64,11 @@ public class QuackstagramHomeUI extends UIManager {
     cardLayout.show(cardPanel, "Home"); // Start with the home view
 
     // Header Panel
-    headerPanel = createHeaderPanel("Quackstagram");
+    headerPanel = createHeaderPanel(pageName);
     add(headerPanel, BorderLayout.NORTH);
 
     // Navigation Bar
-    JPanel navigationPanel = new JPanel();
-    navigationPanel.setBackground(new Color(249, 249, 249));
-    navigationPanel.setLayout(new BoxLayout(navigationPanel, BoxLayout.X_AXIS));
-    navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-    navigationPanel.add(
-      IconButtonCreator.createIconButton("img/icons/home.png", "home", e -> {})
-    );
-    navigationPanel.add(Box.createHorizontalGlue());
-    navigationPanel.add(
-      IconButtonCreator.createIconButton(
-        "img/icons/search.png",
-        "explore",
-        e -> exploreUI()
-      )
-    );
-    navigationPanel.add(Box.createHorizontalGlue());
-    navigationPanel.add(
-      IconButtonCreator.createIconButton(
-        "img/icons/add.png",
-        "add",
-        e -> imageUploadUI()
-      )
-    );
-    navigationPanel.add(Box.createHorizontalGlue());
-    navigationPanel.add(
-      IconButtonCreator.createIconButton(
-        "img/icons/heart.png",
-        "notification",
-        e -> notificationsUI()
-      )
-    );
-    navigationPanel.add(Box.createHorizontalGlue());
-    navigationPanel.add(
-      IconButtonCreator.createIconButton(
-        "img/icons/profile.png",
-        "profile",
-        e -> openProfileUI()
-      )
-    );
-
+    JPanel navigationPanel = createNavigationPanel(pageName);
     add(navigationPanel, BorderLayout.SOUTH);
   }
 

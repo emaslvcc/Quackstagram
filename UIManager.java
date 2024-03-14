@@ -15,6 +15,23 @@ import javax.swing.JPanel;
 
 public abstract class UIManager extends JFrame {
 
+  final String iconLocation = "img/icons/";
+  final String homeIcon = iconLocation + "home.png";
+  final String searchIcon = iconLocation + "search.png";
+  final String addIcon = iconLocation + "add.png";
+  final String heartIcon = iconLocation + "heart.png";
+  final String profileIcon = iconLocation + "profile.png";
+  final String homeIconSelected = iconLocation + "homeSelected.png";
+  final String searchIconSelected = iconLocation + "searchSelected.png";
+  final String addIconSelected = iconLocation + "addSelected.png";
+  final String heartIconSelected = iconLocation + "heartSelected.png";
+  final String profileIconSelected = iconLocation + "profileSelected.png";
+  final String homePage = "Quackstagram";
+  final String searchPage = "Explore";
+  final String addPage = "Upload Image";
+  final String notificationPage = "Notifications";
+  final String profilePage = "Profile";
+
   protected abstract void initializeUI();
 
   protected JPanel createHeaderPanel(String header) {
@@ -29,7 +46,34 @@ public abstract class UIManager extends JFrame {
     return headerPanel;
   }
 
-  protected JPanel createNavigationPanel() {
+  protected JPanel createNavigationPanel(String selectedPage) {
+    String home, search, add, heart, profile;
+    home = homeIcon;
+    search = searchIcon;
+    add = addIcon;
+    heart = heartIcon;
+    profile = profileIcon;
+    switch (selectedPage) {
+      case homePage:
+        home = homeIconSelected;
+        break;
+      case searchPage:
+        search = searchIconSelected;
+        break;
+      case addPage:
+        add = addIconSelected;
+        break;
+      case notificationPage:
+        heart = heartIconSelected;
+        break;
+      case profilePage:
+        profile = profileIconSelected;
+        break;
+      default:
+        System.out.println("no page selected");
+        break;
+    }
+
     // Navigation Bar
     JPanel navigationPanel = new JPanel();
     navigationPanel.setBackground(new Color(249, 249, 249));
@@ -37,32 +81,20 @@ public abstract class UIManager extends JFrame {
     navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
     navigationPanel.add(
-      IconButtonCreator.createIconButton(
-        "img/icons/home.png",
-        "home",
-        e -> openHomeUI()
-      )
+      IconButtonCreator.createIconButton(home, "home", e -> openHomeUI())
+    );
+    navigationPanel.add(Box.createHorizontalGlue());
+    navigationPanel.add(
+      IconButtonCreator.createIconButton(search, "explore", e -> exploreUI())
+    );
+    navigationPanel.add(Box.createHorizontalGlue());
+    navigationPanel.add(
+      IconButtonCreator.createIconButton(add, "add", e -> imageUploadUI())
     );
     navigationPanel.add(Box.createHorizontalGlue());
     navigationPanel.add(
       IconButtonCreator.createIconButton(
-        "img/icons/search.png",
-        "explore",
-        e -> exploreUI()
-      )
-    );
-    navigationPanel.add(Box.createHorizontalGlue());
-    navigationPanel.add(
-      IconButtonCreator.createIconButton(
-        "img/icons/add.png",
-        "add",
-        e -> imageUploadUI()
-      )
-    );
-    navigationPanel.add(Box.createHorizontalGlue());
-    navigationPanel.add(
-      IconButtonCreator.createIconButton(
-        "img/icons/heart.png",
+        heart,
         "notification",
         e -> notificationsUI()
       )
@@ -70,7 +102,7 @@ public abstract class UIManager extends JFrame {
     navigationPanel.add(Box.createHorizontalGlue());
     navigationPanel.add(
       IconButtonCreator.createIconButton(
-        "img/icons/profile.png",
+        profile,
         "profile",
         e -> openProfileUI()
       )
