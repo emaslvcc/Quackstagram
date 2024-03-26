@@ -15,7 +15,10 @@ import javax.swing.JPanel;
 
 public abstract class UIManager extends JFrame {
 
+  // Path to folder that contains the navigation bar icons
   final String iconLocation = "img/icons/";
+
+  // File names of the navigation bar icons
   final String homeIcon = iconLocation + "home.png";
   final String searchIcon = iconLocation + "search.png";
   final String addIcon = iconLocation + "add.png";
@@ -26,16 +29,22 @@ public abstract class UIManager extends JFrame {
   final String addIconSelected = iconLocation + "addSelected.png";
   final String heartIconSelected = iconLocation + "heartSelected.png";
   final String profileIconSelected = iconLocation + "profileSelected.png";
+
+  // Headers for creating the correct navigation bar
   final String homePage = "Quackstagram";
   final String searchPage = "Explore";
   final String addPage = "Upload Image";
   final String notificationPage = "Notifications";
   final String profilePage = "Profile";
 
+  // Dimensions of the main windows
+  static final int WIDTH = 300;
+  static final int HEIGHT = 500;
+
   protected abstract void initializeUI();
 
+  // Create a header panel with any string as input
   protected JPanel createHeaderPanel(String header) {
-    // Header with the Register label
     JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     headerPanel.setBackground(new Color(51, 51, 51)); // Set a darker background for the header
     JLabel lblRegister = new JLabel(header);
@@ -46,6 +55,7 @@ public abstract class UIManager extends JFrame {
     return headerPanel;
   }
 
+  // Create a navigation panel where the current page's icon is in another colour
   protected JPanel createNavigationPanel(String selectedPage) {
     String home, search, add, heart, profile;
     home = homeIcon;
@@ -70,16 +80,17 @@ public abstract class UIManager extends JFrame {
         profile = profileIconSelected;
         break;
       default:
-        System.out.println("no page selected");
+        System.out.println("No page selected.");
         break;
     }
 
-    // Navigation Bar
+    // Navigation bar JPanel setup
     JPanel navigationPanel = new JPanel();
     navigationPanel.setBackground(new Color(249, 249, 249));
     navigationPanel.setLayout(new BoxLayout(navigationPanel, BoxLayout.X_AXIS));
     navigationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+    // Adding an icon and action for each button
     navigationPanel.add(
       IconButtonCreator.createIconButton(home, "home", e -> openHomeUI())
     );

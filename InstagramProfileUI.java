@@ -27,11 +27,8 @@ import javax.swing.SwingConstants;
 
 public class InstagramProfileUI extends UIManager {
 
-  private static final int WIDTH = 300;
-  private static final int HEIGHT = 500;
   private static final int PROFILE_IMAGE_SIZE = 80; // Adjusted size for the profile image to match UI
   private static final int GRID_IMAGE_SIZE = WIDTH / 3; // Static size for grid images
-  //private static final int NAV_ICON_SIZE = 20; // Corrected static size for bottom icons
   private JPanel contentPanel; // Panel to display the image grid or the clicked image
   private JPanel headerPanel; // Panel for the header
   private JPanel navigationPanel; // Panel for the navigation

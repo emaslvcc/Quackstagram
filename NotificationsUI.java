@@ -15,9 +15,6 @@ import javax.swing.JScrollPane;
 
 public class NotificationsUI extends UIManager {
 
-  private static final int WIDTH = 300;
-  private static final int HEIGHT = 500;
-  // private static final int NAV_ICON_SIZE = 20; // Size for navigation icons
   private JPanel headerPanel;
   private String pageName = "Notifications";
 
