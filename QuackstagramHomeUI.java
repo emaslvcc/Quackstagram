@@ -144,11 +144,30 @@ public class QuackstagramHomeUI extends UIManager {
         }
       );
 
+      JLabel commentLabel = new JLabel(postData[3]);
+      commentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+      JButton commentButton = new JButton("🗨️");
+      commentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+      commentButton.setBackground(Color.GRAY);
+      commentButton.setOpaque(true);
+      commentButton.setBorderPainted(false);
+      commentButton.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            handleCommentAction(imageId, commentLabel);
+          }
+        }
+      );
+
       itemPanel.add(nameLabel);
       itemPanel.add(imageLabel);
       itemPanel.add(descriptionLabel);
       itemPanel.add(likesLabel);
       itemPanel.add(likeButton);
+      itemPanel.add(commentLabel);
+      itemPanel.add(commentButton);
 
       panel.add(itemPanel);
 
@@ -171,6 +190,82 @@ public class QuackstagramHomeUI extends UIManager {
   }
 
   private void handleLikeAction(String imageId, JLabel likesLabel) {
+    Path detailsPath = Paths.get("img", "image_details.txt");
+    StringBuilder newContent = new StringBuilder();
+    boolean updated = false;
+    String currentUser = "";
+    String imageOwner = "";
+    String timestamp = LocalDateTime
+      .now()
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+    // Retrieve the current user from users.txt
+    try (
+      BufferedReader userReader = Files.newBufferedReader(
+        Paths.get("data", "users.txt")
+      )
+    ) {
+      String line = userReader.readLine();
+      if (line != null) {
+        currentUser = line.split(":")[0].trim();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    // Read and update image_details.txt
+    try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        if (line.contains("ImageID: " + imageId)) {
+          String[] parts = line.split(", ");
+          imageOwner = parts[1].split(": ")[1];
+          int likes = Integer.parseInt(parts[4].split(": ")[1]);
+          likes++; // Increment the likes count
+          parts[4] = "Likes: " + likes;
+          line = String.join(", ", parts);
+
+          // Update the UI
+          likesLabel.setText("Likes: " + likes);
+          updated = true;
+        }
+        newContent.append(line).append("\n");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    // Write updated likes back to image_details.txt
+    if (updated) {
+      try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
+        writer.write(newContent.toString());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      // Record the like in notifications.txt
+      String notification = String.format(
+        "%s; %s; %s; %s\n",
+        imageOwner,
+        currentUser,
+        imageId,
+        timestamp
+      );
+      try (
+        BufferedWriter notificationWriter = Files.newBufferedWriter(
+          Paths.get("data", "notifications.txt"),
+          StandardOpenOption.CREATE,
+          StandardOpenOption.APPEND
+        )
+      ) {
+        notificationWriter.write(notification);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private void handleCommentAction(String imageId, JLabel likesLabel) {
     Path detailsPath = Paths.get("img", "image_details.txt");
     StringBuilder newContent = new StringBuilder();
     boolean updated = false;
