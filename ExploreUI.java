@@ -54,7 +54,6 @@ public class ExploreUI extends UIManager {
     add(headerPanel, BorderLayout.NORTH);
     add(mainContentPanel, BorderLayout.CENTER);
     add(navigationPanel, BorderLayout.SOUTH);
-
     revalidate();
     repaint();
   }
