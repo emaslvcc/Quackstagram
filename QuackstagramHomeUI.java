@@ -46,6 +46,8 @@ public class QuackstagramHomeUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+    setResizable(false);
+    setLocationRelativeTo(null);
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
 

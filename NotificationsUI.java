@@ -24,6 +24,8 @@ public class NotificationsUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+    setResizable(false);
+    setLocationRelativeTo(null);
     initializeUI();
   }
 

@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 public class ExploreUI extends UIManager {
 
   private static final int IMAGE_SIZE = WIDTH / 3; // Size for each image in the grid
-  private JPanel headerPanel;
+  private JPanel headerPanel, navigationPanel, mainContentPanel;
   private String pageName = "Explore";
 
   public ExploreUI() {
@@ -37,6 +37,8 @@ public class ExploreUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+    setResizable(false);
+    setLocationRelativeTo(null);
     initializeUI();
   }
 
@@ -44,9 +46,9 @@ public class ExploreUI extends UIManager {
     getContentPane().removeAll(); // Clear existing components
     setLayout(new BorderLayout()); // Reset the layout manager
 
-    headerPanel = createHeaderPanel(pageName); // Method from your InstagramProfileUI class
-    JPanel navigationPanel = createNavigationPanel(pageName); // Method from your InstagramProfileUI class
-    JPanel mainContentPanel = createMainContentPanel();
+    headerPanel = createHeaderPanel(pageName);
+    navigationPanel = createNavigationPanel(pageName);
+    mainContentPanel = createMainContentPanel();
 
     // Add panels to the frame
     add(headerPanel, BorderLayout.NORTH);
@@ -65,9 +67,7 @@ public class ExploreUI extends UIManager {
     searchPanel.add(searchField, BorderLayout.CENTER);
     searchPanel.setMaximumSize(
       new Dimension(Integer.MAX_VALUE, searchField.getPreferredSize().height)
-    ); // Limit
-    // the
-    // height
+    ); // Limit the height
 
     // Image Grid
     JPanel imageGridPanel = new JPanel(new GridLayout(0, 3, 2, 2)); // 3 columns, auto rows

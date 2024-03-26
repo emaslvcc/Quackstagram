@@ -122,6 +122,8 @@ public class InstagramProfileUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+    setResizable(false);
+    setLocationRelativeTo(null);
     contentPanel = new JPanel();
     headerPanel = createProfileHeaderPanel(); // Initialize header panel
     navigationPanel = createNavigationPanel(pageName); // Initialize navigation panel
@@ -135,6 +137,7 @@ public class InstagramProfileUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+    setResizable(false);
     contentPanel = new JPanel();
     headerPanel = createProfileHeaderPanel(); // Initialize header panel
     navigationPanel = createNavigationPanel(pageName); // Initialize navigation panel

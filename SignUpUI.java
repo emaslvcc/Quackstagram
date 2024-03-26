@@ -46,6 +46,8 @@ public class SignUpUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout(10, 10));
+    setResizable(false);
+    setLocationRelativeTo(null);
     initializeUI();
   }
 

@@ -42,7 +42,9 @@ public class ImageUploadUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+    setResizable(false);
     initializeUI();
+    setLocationRelativeTo(null);
   }
 
   @Override
