@@ -2,4 +2,6 @@ Xylo: Lorin
 Zara: Lorin
 Mystar: Lorin; Zara
 Lorin: Mystar; Zara
-Username: Mystar
+Username: Mystar; Xylo; Lorin; Zara
+user1: Mystar; Zara
+Bruno: Mystar

@@ -33,11 +33,17 @@ import javax.swing.ScrollPaneConstants;
 
 public class QuackstagramHomeUI extends UIManager {
 
+  private static final int WIDTH = 300;
+  private static final int HEIGHT = 500;
+  private static final int NAV_ICON_SIZE = 20; // Corrected static size for bottom icons
   private static final int IMAGE_WIDTH = WIDTH - 100; // Width for the image posts
   private static final int IMAGE_HEIGHT = 150; // Height for the image posts
   private static final Color LIKE_BUTTON_COLOR = new Color(255, 90, 95); // Color for the like button
+
   private CardLayout cardLayout;
   private JPanel cardPanel, homePanel, imageViewPanel, headerPanel;
+  public JLabel commentLabel;
+  
   private String pageName = "Quackstagram";
 
   public QuackstagramHomeUI() {
@@ -46,8 +52,6 @@ public class QuackstagramHomeUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
-    setResizable(false);
-    setLocationRelativeTo(null);
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
 
@@ -65,7 +69,6 @@ public class QuackstagramHomeUI extends UIManager {
     // Header Panel
     headerPanel = createHeaderPanel(pageName);
     add(headerPanel, BorderLayout.NORTH);
-
     // Navigation Bar
     JPanel navigationPanel = createNavigationPanel(pageName);
     add(navigationPanel, BorderLayout.SOUTH);
@@ -107,9 +110,9 @@ public class QuackstagramHomeUI extends UIManager {
       imageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
       imageLabel.setPreferredSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
       imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add border to image label
-      String imageId = new File(postData[3]).getName().split("\\.")[0];
+      String imageId = new File(postData[4]).getName().split("\\.")[0];
       try {
-        BufferedImage originalImage = ImageIO.read(new File(postData[3]));
+        BufferedImage originalImage = ImageIO.read(new File(postData[4]));
         BufferedImage croppedImage = originalImage.getSubimage(
           0,
           0,
@@ -138,16 +141,17 @@ public class QuackstagramHomeUI extends UIManager {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            handleLikeAction(imageId, likesLabel);
+            ImageLikesManager likesManager = new ImageLikesManager(imageId);
+            likesManager.handleLikeAction(imageId, likesLabel);
           }
         }
       );
 
-      JLabel commentLabel = new JLabel(postData[3]);
-      commentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+      commentLabel = new JLabel(postData[3]);
+      commentLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-      JButton commentButton = new JButton("🗨️");
-      commentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+      JButton commentButton = new JButton("☁");
+      commentButton.setAlignmentX(Component.LEFT_ALIGNMENT);
       commentButton.setBackground(Color.GRAY);
       commentButton.setOpaque(true);
       commentButton.setBorderPainted(false);
@@ -155,7 +159,9 @@ public class QuackstagramHomeUI extends UIManager {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            handleCommentAction(imageId, commentLabel);
+            CommentsUI comments = new CommentsUI(imageId);
+            comments.saveDetails(imageId);
+            comments.setVisible(true);
           }
         }
       );
@@ -185,158 +191,6 @@ public class QuackstagramHomeUI extends UIManager {
       spacingPanel.setPreferredSize(new Dimension(WIDTH - 10, 5)); // Set the height for spacing
       spacingPanel.setBackground(new Color(230, 230, 230)); // Grey color for spacing
       panel.add(spacingPanel);
-    }
-  }
-
-  private void handleLikeAction(String imageId, JLabel likesLabel) {
-    Path detailsPath = Paths.get("img", "image_details.txt");
-    StringBuilder newContent = new StringBuilder();
-    boolean updated = false;
-    String currentUser = "";
-    String imageOwner = "";
-    String timestamp = LocalDateTime
-      .now()
-      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-    // Retrieve the current user from users.txt
-    try (
-      BufferedReader userReader = Files.newBufferedReader(
-        Paths.get("data", "users.txt")
-      )
-    ) {
-      String line = userReader.readLine();
-      if (line != null) {
-        currentUser = line.split(":")[0].trim();
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Read and update image_details.txt
-    try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains("ImageID: " + imageId)) {
-          String[] parts = line.split(", ");
-          imageOwner = parts[1].split(": ")[1];
-          int likes = Integer.parseInt(parts[4].split(": ")[1]);
-          likes++; // Increment the likes count
-          parts[4] = "Likes: " + likes;
-          line = String.join(", ", parts);
-
-          // Update the UI
-          likesLabel.setText("Likes: " + likes);
-          updated = true;
-        }
-        newContent.append(line).append("\n");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Write updated likes back to image_details.txt
-    if (updated) {
-      try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
-        writer.write(newContent.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      // Record the like in notifications.txt
-      String notification = String.format(
-        "%s; %s; %s; %s\n",
-        imageOwner,
-        currentUser,
-        imageId,
-        timestamp
-      );
-      try (
-        BufferedWriter notificationWriter = Files.newBufferedWriter(
-          Paths.get("data", "notifications.txt"),
-          StandardOpenOption.CREATE,
-          StandardOpenOption.APPEND
-        )
-      ) {
-        notificationWriter.write(notification);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  private void handleCommentAction(String imageId, JLabel likesLabel) {
-    Path detailsPath = Paths.get("img", "image_details.txt");
-    StringBuilder newContent = new StringBuilder();
-    boolean updated = false;
-    String currentUser = "";
-    String imageOwner = "";
-    String timestamp = LocalDateTime
-      .now()
-      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-    // Retrieve the current user from users.txt
-    try (
-      BufferedReader userReader = Files.newBufferedReader(
-        Paths.get("data", "users.txt")
-      )
-    ) {
-      String line = userReader.readLine();
-      if (line != null) {
-        currentUser = line.split(":")[0].trim();
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Read and update image_details.txt
-    try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains("ImageID: " + imageId)) {
-          String[] parts = line.split(", ");
-          imageOwner = parts[1].split(": ")[1];
-          int likes = Integer.parseInt(parts[4].split(": ")[1]);
-          likes++; // Increment the likes count
-          parts[4] = "Likes: " + likes;
-          line = String.join(", ", parts);
-
-          // Update the UI
-          likesLabel.setText("Likes: " + likes);
-          updated = true;
-        }
-        newContent.append(line).append("\n");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Write updated likes back to image_details.txt
-    if (updated) {
-      try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
-        writer.write(newContent.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      // Record the like in notifications.txt
-      String notification = String.format(
-        "%s; %s; %s; %s\n",
-        imageOwner,
-        currentUser,
-        imageId,
-        timestamp
-      );
-      try (
-        BufferedWriter notificationWriter = Files.newBufferedWriter(
-          Paths.get("data", "notifications.txt"),
-          StandardOpenOption.CREATE,
-          StandardOpenOption.APPEND
-        )
-      ) {
-        notificationWriter.write(notification);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 
@@ -390,9 +244,10 @@ public class QuackstagramHomeUI extends UIManager {
             "img/uploaded/" + details[0].split(": ")[1] + ".png"; // Assuming PNG format
           String description = details[2].split(": ")[1];
           String likes = "Likes: " + details[4].split(": ")[1];
+          String comments = "Comments: " + details[5].split(": ")[1];
 
           tempData[count++] =
-            new String[] { imagePoster, description, likes, imagePath };
+            new String[] { imagePoster, description, likes, comments, imagePath };
         }
       }
     } catch (IOException e) {
@@ -447,7 +302,8 @@ public class QuackstagramHomeUI extends UIManager {
       new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          handleLikeAction(imageId, likesLabel); // Update this line
+          ImageLikesManager likesManager = new ImageLikesManager(imageId);
+          likesManager.handleLikeAction(imageId, likesLabel); // Update this line
           refreshDisplayImage(postData, imageId); // Refresh the view
         }
       }
@@ -459,6 +315,7 @@ public class QuackstagramHomeUI extends UIManager {
     infoPanel.add(new JLabel(postData[1])); // Description
     infoPanel.add(new JLabel(postData[2])); // Likes
     infoPanel.add(likeButton);
+    
 
     imageViewPanel.add(fullSizeImageLabel, BorderLayout.CENTER);
     imageViewPanel.add(infoPanel, BorderLayout.SOUTH);
@@ -481,14 +338,15 @@ public class QuackstagramHomeUI extends UIManager {
       while ((line = reader.readLine()) != null) {
         if (line.contains("ImageID: " + imageId)) {
           String likes = line.split(", ")[4].split(": ")[1];
+          String comments = line.split(", ")[5].split(": " )[1];
           postData[2] = "Likes: " + likes;
+          postData[3] = "Comments: " + comments;
           break;
         }
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
-
     // Call displayImage with updated postData
     displayImage(postData);
   }
