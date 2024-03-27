@@ -1,3 +1,6 @@
+package UIManager;
+
+import UserManager.User;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;

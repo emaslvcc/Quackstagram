@@ -1,3 +1,6 @@
+package UIManager;
+
+import PostManager.ImageLikesManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -5,6 +8,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,9 +37,6 @@ import javax.swing.ScrollPaneConstants;
 
 public class QuackstagramHomeUI extends UIManager {
 
-  private static final int WIDTH = 300;
-  private static final int HEIGHT = 500;
-  private static final int NAV_ICON_SIZE = 20; // Corrected static size for bottom icons
   private static final int IMAGE_WIDTH = WIDTH - 100; // Width for the image posts
   private static final int IMAGE_HEIGHT = 150; // Height for the image posts
   private static final Color LIKE_BUTTON_COLOR = new Color(255, 90, 95); // Color for the like button
@@ -114,20 +115,14 @@ public class QuackstagramHomeUI extends UIManager {
       imageLabel.setPreferredSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
       imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add border to image label
       String imageId = new File(postData[4]).getName().split("\\.")[0];
-      try {
-        BufferedImage originalImage = ImageIO.read(new File(postData[4]));
-        BufferedImage croppedImage = originalImage.getSubimage(
-          0,
-          0,
-          Math.min(originalImage.getWidth(), IMAGE_WIDTH),
-          Math.min(originalImage.getHeight(), IMAGE_HEIGHT)
-        );
-        ImageIcon imageIcon = new ImageIcon(croppedImage);
-        imageLabel.setIcon(imageIcon);
-      } catch (IOException ex) {
-        // Handle exception: Image file not found or reading error
-        imageLabel.setText("Image not found");
-      }
+
+      System.out.println(postData[4]);
+      ImageIcon imageIcon = new ImageIcon(
+        new ImageIcon(postData[4])
+          .getImage()
+          .getScaledInstance(250, -1, Image.SCALE_SMOOTH)
+      );
+      imageLabel.setIcon(imageIcon);
 
       JLabel descriptionLabel = new JLabel(postData[1]);
       descriptionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -280,20 +275,12 @@ public class QuackstagramHomeUI extends UIManager {
     JLabel fullSizeImageLabel = new JLabel();
     fullSizeImageLabel.setHorizontalAlignment(JLabel.CENTER);
 
-    try {
-      BufferedImage originalImage = ImageIO.read(new File(postData[3]));
-      BufferedImage croppedImage = originalImage.getSubimage(
-        0,
-        0,
-        Math.min(originalImage.getWidth(), WIDTH - 20),
-        Math.min(originalImage.getHeight(), HEIGHT - 40)
-      );
-      ImageIcon imageIcon = new ImageIcon(croppedImage);
-      fullSizeImageLabel.setIcon(imageIcon);
-    } catch (IOException ex) {
-      // Handle exception: Image file not found or reading error
-      fullSizeImageLabel.setText("Image not found");
-    }
+    ImageIcon imageIcon = new ImageIcon(
+      new ImageIcon(postData[4])
+        .getImage()
+        .getScaledInstance(250, -1, Image.SCALE_SMOOTH)
+    );
+    fullSizeImageLabel.setIcon(imageIcon);
 
     // User Info
     JPanel userPanel = new JPanel();

@@ -1,3 +1,5 @@
+package UIManager;
+
 // For future work, to add reactive navigation icons
 
 import java.awt.*;
