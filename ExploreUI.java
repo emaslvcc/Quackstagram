@@ -27,7 +27,7 @@ import javax.swing.JTextField;
 
 public class ExploreUI extends UIManager {
 
-  private static final int IMAGE_SIZE = WIDTH / 3; // Size for each image in the grid
+  private static final int IMAGE_SIZE = 90; // Size for each image in the grid
   private JPanel headerPanel, navigationPanel, mainContentPanel;
   private String pageName = "Explore";
 
@@ -69,7 +69,7 @@ public class ExploreUI extends UIManager {
     ); // Limit the height
 
     // Image Grid
-    JPanel imageGridPanel = new JPanel(new GridLayout(0, 3, 2, 2)); // 3 columns, auto rows
+    JPanel imageGridPanel = new JPanel(new GridLayout(0, 3, 1, 1)); // 3 columns, auto rows
 
     // Load images from the uploaded folder
     File imageDir = new File("img/uploaded");
@@ -124,8 +124,6 @@ public class ExploreUI extends UIManager {
     add(headerPanel, BorderLayout.NORTH);
     add(createNavigationPanel(pageName), BorderLayout.SOUTH);
 
-    JPanel imageViewerPanel = new JPanel(new BorderLayout());
-
     // Extract image ID from the imagePath
     String imageId = new File(imagePath).getName().split("\\.")[0];
 
@@ -154,7 +152,7 @@ public class ExploreUI extends UIManager {
     }
 
     // Calculate time since posting
-    String timeSincePosting = "Unknown";
+    String timeSincePosting = null;
     if (!timestampString.isEmpty()) {
       LocalDateTime timestamp = LocalDateTime.parse(
         timestampString,
@@ -176,13 +174,12 @@ public class ExploreUI extends UIManager {
     // Prepare the image for display
     JLabel imageLabel = new JLabel();
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
-    try {
-      BufferedImage originalImage = ImageIO.read(new File(imagePath));
-      ImageIcon imageIcon = new ImageIcon(originalImage);
-      imageLabel.setIcon(imageIcon);
-    } catch (IOException ex) {
-      imageLabel.setText("Image not found");
-    }
+    ImageIcon imageIcon = new ImageIcon(
+      new ImageIcon(imagePath)
+        .getImage()
+        .getScaledInstance(250, -1, Image.SCALE_SMOOTH)
+    );
+    imageLabel.setIcon(imageIcon);
 
     // Bottom panel for bio and likes
     JPanel bottomPanel = new JPanel(new BorderLayout());
