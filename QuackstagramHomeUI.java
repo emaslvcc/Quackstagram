@@ -43,7 +43,7 @@ public class QuackstagramHomeUI extends UIManager {
   private CardLayout cardLayout;
   private JPanel cardPanel, homePanel, imageViewPanel, headerPanel;
   public JLabel commentLabel;
-  
+
   private String pageName = "Quackstagram";
 
   public QuackstagramHomeUI() {
@@ -52,6 +52,9 @@ public class QuackstagramHomeUI extends UIManager {
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+    setResizable(false);
+    setLocationRelativeTo(null);
+
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
 
@@ -247,7 +250,13 @@ public class QuackstagramHomeUI extends UIManager {
           String comments = "Comments: " + details[5].split(": ")[1];
 
           tempData[count++] =
-            new String[] { imagePoster, description, likes, comments, imagePath };
+            new String[] {
+              imagePoster,
+              description,
+              likes,
+              comments,
+              imagePath,
+            };
         }
       }
     } catch (IOException e) {
@@ -315,7 +324,6 @@ public class QuackstagramHomeUI extends UIManager {
     infoPanel.add(new JLabel(postData[1])); // Description
     infoPanel.add(new JLabel(postData[2])); // Likes
     infoPanel.add(likeButton);
-    
 
     imageViewPanel.add(fullSizeImageLabel, BorderLayout.CENTER);
     imageViewPanel.add(infoPanel, BorderLayout.SOUTH);
@@ -338,7 +346,7 @@ public class QuackstagramHomeUI extends UIManager {
       while ((line = reader.readLine()) != null) {
         if (line.contains("ImageID: " + imageId)) {
           String likes = line.split(", ")[4].split(": ")[1];
-          String comments = line.split(", ")[5].split(": " )[1];
+          String comments = line.split(", ")[5].split(": ")[1];
           postData[2] = "Likes: " + likes;
           postData[3] = "Comments: " + comments;
           break;
