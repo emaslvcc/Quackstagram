@@ -95,7 +95,7 @@ public class SignUpUI extends UIManager {
       new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
-            accountType = "business";
+            accountType = "Business";
           }
         }
       }

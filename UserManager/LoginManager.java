@@ -41,8 +41,9 @@ public class LoginManager implements Login {
           credentials[0].equals(username) && credentials[1].equals(password)
         ) {
           String bio = credentials[2];
+          String accountType = credentials[3];
           // Create User object and save information
-          newUser = new User(username, bio, password); // Assuming User constructor takes these parameters
+          newUser = new User(username, bio, password, accountType); // Assuming User constructor takes these parameters
           saveUserInformation(newUser);
 
           return true;

@@ -311,8 +311,11 @@ public class InstagramProfileUI extends UIManager {
     profileBio.setBackground(new Color(249, 249, 249));
     profileBio.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10)); // Padding on the sides
 
+    JLabel accountType = new bioMaker(currentUser);
+
     profileNameAndBioPanel.add(profileNameLabel, BorderLayout.NORTH);
     profileNameAndBioPanel.add(profileBio, BorderLayout.CENTER);
+    profileNameAndBioPanel.add(accountType, BorderLayout.SOUTH);
 
     headerPanel.add(profileNameAndBioPanel);
 

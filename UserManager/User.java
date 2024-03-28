@@ -14,8 +14,9 @@ public class User {
   private int followersCount;
   private int followingCount;
   private List<Picture> pictures;
+  private String type;
 
-  public User(String username, String bio, String password) {
+  public User(String username, String bio, String password, String type) {
     this.username = username;
     this.bio = bio;
     this.password = password;
@@ -24,6 +25,7 @@ public class User {
     this.postsCount = 0;
     this.followersCount = 0;
     this.followingCount = 0;
+    this.type = type;
   }
 
   public User(String username) {
@@ -51,6 +53,10 @@ public class User {
 
   public int getPostsCount() {
     return postsCount;
+  }
+
+  public String getType() {
+    return type;
   }
 
   public int getFollowersCount() {
@@ -81,6 +87,6 @@ public class User {
   // Implement the toString method for saving user information
   @Override
   public String toString() {
-    return username + ":" + bio + ":" + password; // Format as needed
+    return username + ":" + bio + ":" + password + ":" + type; // Format as needed
   }
 }
