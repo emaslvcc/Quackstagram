@@ -4,11 +4,20 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is responsible for managing the relationships between users.
+ */
 public class UserRelationshipManager {
 
   private final String followersFilePath = "data/followers.txt";
 
-  // Method to follow a user
+  /**
+   * Method to let a user follow another.
+   *
+   * @param follower Current user
+   * @param followed User to follow
+   * @throws IOException
+   */
   public void followUser(String follower, String followed) throws IOException {
     if (!isAlreadyFollowing(follower, followed)) {
       try (
@@ -22,7 +31,14 @@ public class UserRelationshipManager {
     }
   }
 
-  // Method to check if a user is already following another user
+  /**
+   * Method to check if a user is following another.
+   *
+   * @param follower Current user
+   * @param followed User to follow
+   * @return true or false if a user is following another already
+   * @throws IOException
+   */
   private boolean isAlreadyFollowing(String follower, String followed)
     throws IOException {
     try (
@@ -40,7 +56,13 @@ public class UserRelationshipManager {
     return false;
   }
 
-  // Method to get the list of followers for a user
+  /**
+   * Method to get the list of a user's followers
+   *
+   * @param username user to check
+   * @return returns all the users they follow
+   * @throws IOException
+   */
   public List<String> getFollowers(String username) throws IOException {
     List<String> followers = new ArrayList<>();
     try (
@@ -59,7 +81,13 @@ public class UserRelationshipManager {
     return followers;
   }
 
-  // Method to get the list of users a user is following
+  /**
+   * Method to get the list of users a user is following.
+   *
+   * @param username
+   * @return
+   * @throws IOException
+   */
   public List<String> getFollowing(String username) throws IOException {
     List<String> following = new ArrayList<>();
     try (

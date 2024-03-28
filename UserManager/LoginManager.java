@@ -6,6 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Class that manages logging in and adding new users.
+ */
 public class LoginManager implements Login {
 
   private static User newUser;

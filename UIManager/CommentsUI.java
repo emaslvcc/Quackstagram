@@ -13,6 +13,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.swing.*;
 
+/**
+ * Responsible for comment functionality.
+ */
 public class CommentsUI extends JFrame {
 
   private JTextField newCommentField;

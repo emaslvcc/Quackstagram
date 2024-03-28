@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,6 +28,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ * Responsible for uploading new images to a user's profile.
+ */
 public class ImageUploadUI extends UIManager {
 
   private JLabel imagePreviewLabel;

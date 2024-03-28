@@ -1,5 +1,6 @@
 package UIManager;
 
+import UserManager.User;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -15,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
-
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,8 +24,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import UserManager.User;
-
+/**
+ * Responsible for showing posts of all Quackstagram users.
+ */
 public class ExploreUI extends UIManager {
 
   private static final int IMAGE_SIZE = 90; // Size for each image in the grid

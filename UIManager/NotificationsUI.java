@@ -15,6 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+/**
+ * Notifications UI and logic.
+ */
 public class NotificationsUI extends UIManager {
 
   private JPanel headerPanel;

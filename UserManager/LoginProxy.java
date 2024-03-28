@@ -1,5 +1,8 @@
 package UserManager;
 
+/**
+ * Class to validate a login or sign up attempt before calling the actual methods.
+ */
 public class LoginProxy implements Login {
 
   public static boolean verifyCredentials(String username, String password) {

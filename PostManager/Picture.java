@@ -3,7 +3,9 @@ package PostManager;
 import java.util.ArrayList;
 import java.util.List;
 
-// Represents a picture on Quackstagram
+/**
+ * Represents a picture on Quackstagram
+ */
 public class Picture {
 
   private String imagePath;

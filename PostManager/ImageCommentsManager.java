@@ -7,10 +7,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
 import javax.swing.JLabel;
 
+/**
+ * Manages the function of commenting on images.
+ */
 public class ImageCommentsManager {
 
   private static Path detailsPath = Paths.get("img", "image_details.txt");

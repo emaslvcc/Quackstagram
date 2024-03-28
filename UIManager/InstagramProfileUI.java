@@ -28,6 +28,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
+/**
+ * Responsible for viewing profiles and following other users.
+ */
 public class InstagramProfileUI extends UIManager {
 
   private static final int PROFILE_IMAGE_SIZE = 80; // Adjusted size for the profile image to match UI
@@ -45,8 +48,7 @@ public class InstagramProfileUI extends UIManager {
     int followersCount = 0;
     int followingCount = 0;
 
-    // Step 1: Read image_details.txt to count the number of images posted by the
-    // user
+    // Step 1: Read image_details.txt to count the number of images posted by the user
     Path imageDetailsFilePath = Paths.get("img", "image_details.txt");
     try (
       BufferedReader imageDetailsReader = Files.newBufferedReader(

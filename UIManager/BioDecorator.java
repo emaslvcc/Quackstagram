@@ -5,6 +5,9 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
+/**
+ * Responsible for decorating the bio depending on a user's account type.
+ */
 public class BioDecorator implements Bio {
 
   public BioDecorator() {}

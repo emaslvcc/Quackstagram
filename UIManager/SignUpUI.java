@@ -1,5 +1,6 @@
 package UIManager;
 
+import UserManager.LoginProxy;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -32,8 +32,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import UserManager.LoginProxy;
-
+/**
+ * Sign up page and logic.
+ */
 public class SignUpUI extends UIManager {
 
   private static final int WIDTH = 300;
@@ -83,7 +84,7 @@ public class SignUpUI extends UIManager {
     fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
     fieldsPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
 
-  JPanel usernamePanel = new JPanel();
+    JPanel usernamePanel = new JPanel();
     JPanel passwordPanel = new JPanel();
     JPanel bioPanel = new JPanel();
     JLabel usernameLabel = new JLabel("Username:");
@@ -93,7 +94,7 @@ public class SignUpUI extends UIManager {
     txtUsername = new JTextField(10);
     password = new JPasswordField(10);
     txtBio = new JTextField(10);
-    
+
     usernamePanel.add(usernameLabel);
     usernamePanel.add(txtUsername);
 

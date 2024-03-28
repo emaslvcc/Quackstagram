@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+/**
+ * Used to create icon buttons.
+ */
 public class IconButtonCreator {
 
   private static final int NAV_ICON_SIZE = 20; // Size for navigation icons

@@ -16,6 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Manages the main structure of all windows.
+ */
 public abstract class UIManager extends JFrame {
 
   // Path to folder that contains the navigation bar icons

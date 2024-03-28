@@ -4,7 +4,9 @@ import PostManager.Picture;
 import java.util.ArrayList;
 import java.util.List;
 
-// Represents a user on Quackstagram
+/**
+ * Represents a user in Quackstagram.
+ */
 public class User {
 
   private String username;
@@ -16,6 +18,14 @@ public class User {
   private List<Picture> pictures;
   private String type;
 
+  /**
+   * Constructor for a new user
+   *
+   * @param username
+   * @param bio
+   * @param password
+   * @param type User type, a normal Member or Business.
+   */
   public User(String username, String bio, String password, String type) {
     this.username = username;
     this.bio = bio;
