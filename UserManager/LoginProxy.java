@@ -14,10 +14,11 @@ public class LoginProxy implements Login {
   public static void saveCredentials(
     String username,
     String password,
-    String bio
+    String bio,
+    String accountType
   ) {
     if (isValid(username, password)) {
-      LoginManager.saveCredentials(username, password, bio);
+      LoginManager.saveCredentials(username, password, bio, accountType);
     } else {
       System.out.println("Invalid username or password.");
     }

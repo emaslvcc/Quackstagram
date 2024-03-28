@@ -118,8 +118,6 @@ public class InstagramProfileUI extends UIManager {
     currentUser.setFollowingCount(followingCount);
     currentUser.setPostCount(imageCount);
 
-    System.out.println(currentUser.getPostsCount());
-
     setTitle("DACS Profile");
     setSize(WIDTH, HEIGHT);
     setMinimumSize(new Dimension(WIDTH, HEIGHT));

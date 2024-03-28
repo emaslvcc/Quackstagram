@@ -13,14 +13,15 @@ public class LoginManager implements Login {
   public static void saveCredentials(
     String username,
     String password,
-    String bio
+    String bio,
+    String accountType
   ) {
     try (
       BufferedWriter writer = new BufferedWriter(
         new FileWriter("data/credentials.txt", true)
       )
     ) {
-      writer.write(username + ":" + password + ":" + bio + ":user");
+      writer.write(username + ":" + password + ":" + bio + ":" + accountType);
       writer.newLine();
     } catch (IOException e) {
       e.printStackTrace();

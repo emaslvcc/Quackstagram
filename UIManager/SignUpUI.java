@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -44,6 +45,7 @@ public class SignUpUI extends UIManager {
   private final String credentialsFilePath = "data/credentials.txt";
   private final String profilePhotoStoragePath = "img/storage/profile/";
   private JPanel headerPanel;
+  private String accountType = "normal";
 
   public SignUpUI() {
     setTitle("Quackstagram - Register");
@@ -88,7 +90,16 @@ public class SignUpUI extends UIManager {
     txtUsername.setForeground(Color.GRAY);
     txtPassword.setForeground(Color.GRAY);
 
-    JCheckBox accountType = new JCheckBox("Business Account");
+    JCheckBox accountTypeCheckBox = new JCheckBox("Business Account");
+    accountTypeCheckBox.addItemListener(
+      new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          if (e.getStateChange() == ItemEvent.SELECTED) {
+            accountType = "business";
+          }
+        }
+      }
+    );
 
     fieldsPanel.add(Box.createVerticalStrut(10));
     fieldsPanel.add(photoPanel);
@@ -98,7 +109,7 @@ public class SignUpUI extends UIManager {
     fieldsPanel.add(txtPassword);
     fieldsPanel.add(Box.createVerticalStrut(10));
     fieldsPanel.add(txtBio);
-    fieldsPanel.add(accountType);
+    fieldsPanel.add(accountTypeCheckBox);
     btnUploadPhoto = new JButton("Upload Photo");
 
     btnUploadPhoto.addActionListener(
@@ -155,7 +166,7 @@ public class SignUpUI extends UIManager {
         JOptionPane.ERROR_MESSAGE
       );
     } else {
-      LoginProxy.saveCredentials(username, password, bio);
+      LoginProxy.saveCredentials(username, password, bio, accountType);
       handleProfilePictureUpload();
       dispose();
 
