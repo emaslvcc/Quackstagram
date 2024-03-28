@@ -6,3 +6,4 @@ Username: Mystar; Xylo; Lorin; Zara
 user1: Mystar; Zara
 Bruno: Mystar
 Username56: Username
+Zoro: Username
