@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -77,6 +78,11 @@ public class ImageUploadUI extends UIManager {
     JScrollPane bioScrollPane = new JScrollPane(bioTextArea);
     bioScrollPane.setPreferredSize(new Dimension(WIDTH - 50, HEIGHT / 6));
     contentPanel.add(bioScrollPane);
+
+    // Sponsor tag
+    JCheckBox accountType = new JCheckBox("Sponsored Post");
+    accountType.setAlignmentX(Component.CENTER_ALIGNMENT);
+    contentPanel.add(accountType);
 
     // Upload button
     uploadButton = new JButton("Upload Image");

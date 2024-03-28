@@ -85,7 +85,6 @@ public class SignUpUI extends UIManager {
     txtBio.setForeground(Color.GRAY);
     txtUsername.setForeground(Color.GRAY);
     txtPassword.setForeground(Color.GRAY);
-    JCheckBox accountType = new JCheckBox("Business Account");
 
     fieldsPanel.add(Box.createVerticalStrut(10));
     fieldsPanel.add(photoPanel);
@@ -95,7 +94,6 @@ public class SignUpUI extends UIManager {
     fieldsPanel.add(txtPassword);
     fieldsPanel.add(Box.createVerticalStrut(10));
     fieldsPanel.add(txtBio);
-    fieldsPanel.add(accountType);
     btnUploadPhoto = new JButton("Upload Photo");
 
     btnUploadPhoto.addActionListener(
