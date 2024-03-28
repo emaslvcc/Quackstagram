@@ -42,6 +42,7 @@ public class QuackstagramHomeUI extends UIManager {
   private CardLayout cardLayout;
   private JPanel cardPanel, homePanel, imageViewPanel, headerPanel;
   public JLabel commentLabel;
+  private String currentUser;
 
   private String pageName = "Quackstagram";
 
@@ -135,7 +136,7 @@ public class QuackstagramHomeUI extends UIManager {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            ImageLikesManager likesManager = new ImageLikesManager(imageId);
+            ImageLikesManager likesManager = new ImageLikesManager(currentUser);
             likesManager.handleLikeAction(imageId, likesLabel);
           }
         }
@@ -189,7 +190,7 @@ public class QuackstagramHomeUI extends UIManager {
   }
 
   private String[][] createSampleData() {
-    String currentUser = "";
+    currentUser = "";
     try (
       BufferedReader reader = Files.newBufferedReader(
         Paths.get("data", "users.txt")
