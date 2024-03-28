@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class LoginManager {
+public class LoginManager implements Login {
 
   private static User newUser;
 
@@ -57,7 +57,7 @@ public class LoginManager {
     return newUser;
   }
 
-  private static void saveUserInformation(User user) {
+  public static void saveUserInformation(User user) {
     try (
       BufferedWriter writer = new BufferedWriter(
         new FileWriter("data/users.txt", false)
