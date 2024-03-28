@@ -25,8 +25,6 @@ public class LoginProxy implements Login {
   }
 
   private static boolean isValid(String username, String password) {
-    // Implement your security checks here
-    // For example, check if username and password meet certain criteria
     return (
       username != null &&
       !username.isEmpty() &&
