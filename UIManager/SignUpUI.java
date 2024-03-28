@@ -209,7 +209,7 @@ public class SignUpUI extends UIManager {
         new FileWriter("data/credentials.txt", true)
       )
     ) {
-      writer.write(username + ":" + password + ":" + bio);
+      writer.write(username + ":" + password + ":" + bio + ":user");
       writer.newLine();
     } catch (IOException e) {
       e.printStackTrace();

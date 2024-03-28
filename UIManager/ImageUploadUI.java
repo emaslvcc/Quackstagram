@@ -61,7 +61,7 @@ public class ImageUploadUI extends UIManager {
     // Image preview
     imagePreviewLabel = new JLabel();
     imagePreviewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    imagePreviewLabel.setPreferredSize(new Dimension(WIDTH, HEIGHT / 3));
+    imagePreviewLabel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
     // Set an initial empty icon to the imagePreviewLabel
     ImageIcon emptyImageIcon = new ImageIcon();

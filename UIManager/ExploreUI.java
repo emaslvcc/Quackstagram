@@ -62,14 +62,7 @@ public class ExploreUI extends UIManager {
   }
 
   private JPanel createMainContentPanel() {
-    // Create the main content panel with search and image grid
-    // Search bar at the top
-    JPanel searchPanel = new JPanel(new BorderLayout());
-    JTextField searchField = new JTextField("Search Users");
-    searchPanel.add(searchField, BorderLayout.CENTER);
-    searchPanel.setMaximumSize(
-      new Dimension(Integer.MAX_VALUE, searchField.getPreferredSize().height)
-    ); // Limit the height
+    // Create the main content panel with image grid
 
     // Image Grid
     JPanel imageGridPanel = new JPanel(new GridLayout(0, 3, 1, 1)); // 3 columns, auto rows
@@ -114,7 +107,6 @@ public class ExploreUI extends UIManager {
     mainContentPanel.setLayout(
       new BoxLayout(mainContentPanel, BoxLayout.Y_AXIS)
     );
-    mainContentPanel.add(searchPanel);
     mainContentPanel.add(scrollPane); // This will stretch to take up remaining space
     return mainContentPanel;
   }
@@ -166,12 +158,29 @@ public class ExploreUI extends UIManager {
       timeSincePosting = days + " day" + (days != 1 ? "s" : "") + " ago";
     }
 
+    // Back button
+    JButton backButton = new JButton("Back");
+
+    // Make the button take up the full width
+    backButton.setPreferredSize(new Dimension(70, 30));
+
+    backButton.addActionListener(e -> {
+      getContentPane().removeAll();
+      add(headerPanel, BorderLayout.NORTH);
+      add(createMainContentPanel(), BorderLayout.CENTER);
+      add(createNavigationPanel(pageName), BorderLayout.SOUTH);
+      revalidate();
+      repaint();
+    });
+
     // Top panel for username and time since posting
     JPanel topPanel = new JPanel(new BorderLayout());
     JButton usernameLabel = new JButton(username);
+    usernameLabel.setPreferredSize(new Dimension(70, 30));
     JLabel timeLabel = new JLabel(timeSincePosting);
     timeLabel.setHorizontalAlignment(JLabel.RIGHT);
-    topPanel.add(usernameLabel, BorderLayout.WEST);
+    topPanel.add(backButton, BorderLayout.WEST);
+    topPanel.add(usernameLabel, BorderLayout.CENTER);
     topPanel.add(timeLabel, BorderLayout.EAST);
 
     // Prepare the image for display
@@ -201,25 +210,6 @@ public class ExploreUI extends UIManager {
     add(headerPanel, BorderLayout.NORTH);
     add(createNavigationPanel(pageName), BorderLayout.SOUTH);
 
-    // Panel for the back button
-    JPanel backButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JButton backButton = new JButton("Back");
-
-    // Make the button take up the full width
-    backButton.setPreferredSize(
-      new Dimension(WIDTH - 20, backButton.getPreferredSize().height)
-    );
-
-    backButtonPanel.add(backButton);
-
-    backButton.addActionListener(e -> {
-      getContentPane().removeAll();
-      add(headerPanel, BorderLayout.NORTH);
-      add(createMainContentPanel(), BorderLayout.CENTER);
-      add(createNavigationPanel(pageName), BorderLayout.SOUTH);
-      revalidate();
-      repaint();
-    });
     final String finalUsername = username;
 
     usernameLabel.addActionListener(e -> {
@@ -237,7 +227,7 @@ public class ExploreUI extends UIManager {
     containerPanel.add(bottomPanel, BorderLayout.SOUTH);
 
     // Add the container panel and back button panel to the frame
-    add(backButtonPanel, BorderLayout.NORTH);
+    // add(backButtonPanel, BorderLayout.NORTH);
     add(containerPanel, BorderLayout.CENTER);
 
     revalidate();

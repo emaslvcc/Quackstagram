@@ -37,8 +37,6 @@ import javax.swing.ScrollPaneConstants;
 
 public class QuackstagramHomeUI extends UIManager {
 
-  private static final int IMAGE_WIDTH = WIDTH - 100; // Width for the image posts
-  private static final int IMAGE_HEIGHT = 150; // Height for the image posts
   private static final Color LIKE_BUTTON_COLOR = new Color(255, 90, 95); // Color for the like button
 
   private CardLayout cardLayout;
@@ -112,15 +110,13 @@ public class QuackstagramHomeUI extends UIManager {
       // Crop the image to the fixed size
       JLabel imageLabel = new JLabel();
       imageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-      imageLabel.setPreferredSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
       imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add border to image label
       String imageId = new File(postData[4]).getName().split("\\.")[0];
 
-      System.out.println(postData[4]);
       ImageIcon imageIcon = new ImageIcon(
         new ImageIcon(postData[4])
           .getImage()
-          .getScaledInstance(250, -1, Image.SCALE_SMOOTH)
+          .getScaledInstance(220, -1, Image.SCALE_SMOOTH)
       );
       imageLabel.setIcon(imageIcon);
 

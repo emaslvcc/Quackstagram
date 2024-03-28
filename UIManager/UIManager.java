@@ -54,7 +54,7 @@ public abstract class UIManager extends JFrame {
     lblRegister.setFont(new Font("Arial", Font.BOLD, 16));
     lblRegister.setForeground(Color.WHITE); // Set the text color to white
     headerPanel.add(lblRegister);
-    headerPanel.setPreferredSize(new Dimension(WIDTH, 40)); // Give the header a fixed height
+    headerPanel.setPreferredSize(new Dimension(WIDTH, 30)); // Give the header a fixed height
     return headerPanel;
   }
 
