@@ -44,8 +44,7 @@ public class SignUpUI extends UIManager {
   private JLabel lblPhoto;
   private final String credentialsFilePath = "data/credentials.txt";
   private final String profilePhotoStoragePath = "img/storage/profile/";
-  private JPanel headerPanel;
-  private String accountType = "normal";
+  private String accountType = "Member";
 
   public SignUpUI() {
     setTitle("Quackstagram - Register");

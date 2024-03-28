@@ -5,9 +5,9 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
-public class NormalBio implements Bio {
+public class BioDecorator implements Bio {
 
-  public NormalBio() {}
+  public BioDecorator() {}
 
   public JLabel bioMaker(User user) {
     JLabel accountType = new JLabel(user.getType());
