@@ -103,7 +103,8 @@ public class SignUpUI extends UIManager {
     bioPanel.add(bioLabel);
     bioPanel.add(txtBio);
 
-    JCheckBox accountTypeCheckBox = new JCheckBox("Business Account");
+    JCheckBox accountTypeCheckBox = new JCheckBox("Business                 ");
+    // accountTypeCheckBox.setHorizontalTextPosition(SwingConstants.RIGHT);
     accountTypeCheckBox.addItemListener(
       new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
