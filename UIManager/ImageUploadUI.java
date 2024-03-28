@@ -235,7 +235,7 @@ public class ImageUploadUI extends UIManager {
     ) {
       writer.write(
         String.format(
-          "ImageID: %s, Username: %s, Bio: %s, Timestamp: %s, Likes: 0",
+          "ImageID: %s, Username: %s, Bio: %s, Timestamp: %s, Likes: 0, Comments: 0",
           imageId,
           username,
           bio,

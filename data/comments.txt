@@ -1,2 +1,4 @@
-Xylo; Lorin; Xylo_1; hey man
-Xylo; Lorin; Xylo_1; how are you
+Lorin; NFTKing; Lorin_1; Wow your lookin great buddy! much love from Malta
+Lorin; NFTKing; Lorin_2; What coffee is that yo?
+NFTKing; buh; NFTKing_1; buh
+NFTKing; buh; NFTKing_2; buh
