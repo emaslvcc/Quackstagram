@@ -7,4 +7,5 @@ user1: Mystar; Zara
 Bruno: Mystar
 Username56: Username
 Zoro: Username
-busta: Zara
+busta: Zara; Username
+brunussy: Username
