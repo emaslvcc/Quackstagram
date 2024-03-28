@@ -1,6 +1,7 @@
 package UIManager;
 
 import UserManager.LoginManager;
+import UserManager.LoginProxy;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -154,7 +155,7 @@ public class SignUpUI extends UIManager {
         JOptionPane.ERROR_MESSAGE
       );
     } else {
-      LoginManager.saveCredentials(username, password, bio);
+      LoginProxy.saveCredentials(username, password, bio);
       handleProfilePictureUpload();
       dispose();
 
