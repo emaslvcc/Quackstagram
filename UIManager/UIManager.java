@@ -41,7 +41,7 @@ public abstract class UIManager extends JFrame {
   final String profilePage = "Profile";
 
   // Dimensions of the main windows
-  static final int WIDTH = 300;
+  static final int WIDTH = 320;
   static final int HEIGHT = 500;
 
   protected abstract void initializeUI();

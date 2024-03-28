@@ -1,5 +1,6 @@
 package UIManager;
 
+import UserManager.LoginManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -86,6 +87,8 @@ public class SignUpUI extends UIManager {
     txtUsername.setForeground(Color.GRAY);
     txtPassword.setForeground(Color.GRAY);
 
+    JCheckBox accountType = new JCheckBox("Business Account");
+
     fieldsPanel.add(Box.createVerticalStrut(10));
     fieldsPanel.add(photoPanel);
     fieldsPanel.add(Box.createVerticalStrut(10));
@@ -94,6 +97,7 @@ public class SignUpUI extends UIManager {
     fieldsPanel.add(txtPassword);
     fieldsPanel.add(Box.createVerticalStrut(10));
     fieldsPanel.add(txtBio);
+    fieldsPanel.add(accountType);
     btnUploadPhoto = new JButton("Upload Photo");
 
     btnUploadPhoto.addActionListener(
@@ -150,7 +154,7 @@ public class SignUpUI extends UIManager {
         JOptionPane.ERROR_MESSAGE
       );
     } else {
-      saveCredentials(username, password, bio);
+      LoginManager.saveCredentials(username, password, bio);
       handleProfilePictureUpload();
       dispose();
 
@@ -199,19 +203,6 @@ public class SignUpUI extends UIManager {
       BufferedImage image = ImageIO.read(file);
       File outputFile = new File(profilePhotoStoragePath + username + ".png");
       ImageIO.write(image, "png", outputFile);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void saveCredentials(String username, String password, String bio) {
-    try (
-      BufferedWriter writer = new BufferedWriter(
-        new FileWriter("data/credentials.txt", true)
-      )
-    ) {
-      writer.write(username + ":" + password + ":" + bio + ":user");
-      writer.newLine();
     } catch (IOException e) {
       e.printStackTrace();
     }

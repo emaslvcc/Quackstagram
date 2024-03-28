@@ -79,11 +79,6 @@ public class ImageUploadUI extends UIManager {
     bioScrollPane.setPreferredSize(new Dimension(WIDTH - 50, HEIGHT / 6));
     contentPanel.add(bioScrollPane);
 
-    // Sponsor tag
-    JCheckBox accountType = new JCheckBox("Sponsored Post");
-    accountType.setAlignmentX(Component.CENTER_ALIGNMENT);
-    contentPanel.add(accountType);
-
     // Upload button
     uploadButton = new JButton("Upload Image");
     uploadButton.setAlignmentX(Component.CENTER_ALIGNMENT);
