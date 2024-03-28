@@ -1,23 +1,21 @@
 package UIManager;
 
-import UserManager.LoginManager;
-import UserManager.LoginProxy;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,21 +24,24 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import UserManager.LoginProxy;
 
 public class SignUpUI extends UIManager {
 
   private static final int WIDTH = 300;
   private static final int HEIGHT = 500;
 
-  private JTextField txtUsername, txtPassword, txtBio;
+  private JTextField txtUsername, txtBio;
   private JButton btnRegister, btnUploadPhoto, btnSignIn;
+  private JPasswordField password;
   private JLabel lblPhoto;
   private final String credentialsFilePath = "data/credentials.txt";
   private final String profilePhotoStoragePath = "img/storage/profile/";
@@ -82,12 +83,25 @@ public class SignUpUI extends UIManager {
     fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
     fieldsPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
 
-    txtUsername = new JTextField("Username");
-    txtPassword = new JTextField("Password");
-    txtBio = new JTextField("Bio");
-    txtBio.setForeground(Color.GRAY);
-    txtUsername.setForeground(Color.GRAY);
-    txtPassword.setForeground(Color.GRAY);
+  JPanel usernamePanel = new JPanel();
+    JPanel passwordPanel = new JPanel();
+    JPanel bioPanel = new JPanel();
+    JLabel usernameLabel = new JLabel("Username:");
+    JLabel passwordLabel = new JLabel("Password:");
+    JLabel bioLabel = new JLabel("          Bio:");
+
+    txtUsername = new JTextField(10);
+    password = new JPasswordField(10);
+    txtBio = new JTextField(10);
+    
+    usernamePanel.add(usernameLabel);
+    usernamePanel.add(txtUsername);
+
+    passwordPanel.add(passwordLabel);
+    passwordPanel.add(password);
+
+    bioPanel.add(bioLabel);
+    bioPanel.add(txtBio);
 
     JCheckBox accountTypeCheckBox = new JCheckBox("Business Account");
     accountTypeCheckBox.addItemListener(
@@ -103,11 +117,11 @@ public class SignUpUI extends UIManager {
     fieldsPanel.add(Box.createVerticalStrut(10));
     fieldsPanel.add(photoPanel);
     fieldsPanel.add(Box.createVerticalStrut(10));
-    fieldsPanel.add(txtUsername);
+    fieldsPanel.add(usernamePanel);
     fieldsPanel.add(Box.createVerticalStrut(10));
-    fieldsPanel.add(txtPassword);
+    fieldsPanel.add(passwordPanel);
     fieldsPanel.add(Box.createVerticalStrut(10));
-    fieldsPanel.add(txtBio);
+    fieldsPanel.add(bioPanel);
     fieldsPanel.add(accountTypeCheckBox);
     btnUploadPhoto = new JButton("Upload Photo");
 
@@ -154,7 +168,7 @@ public class SignUpUI extends UIManager {
 
   private void onRegisterClicked(ActionEvent event) {
     String username = txtUsername.getText();
-    String password = txtPassword.getText();
+    String passwordToSave = String.valueOf(password.getPassword());
     String bio = txtBio.getText();
 
     if (doesUsernameExist(username)) {
@@ -165,7 +179,7 @@ public class SignUpUI extends UIManager {
         JOptionPane.ERROR_MESSAGE
       );
     } else {
-      LoginProxy.saveCredentials(username, password, bio, accountType);
+      LoginProxy.saveCredentials(username, passwordToSave, bio, accountType);
       handleProfilePictureUpload();
       dispose();
 
