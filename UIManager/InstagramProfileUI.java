@@ -113,7 +113,7 @@ public class InstagramProfileUI extends UIManager {
       e.printStackTrace();
     }
 
-    System.out.println("Bio for " + currentUser.getUsername() + ": " + bio);
+    // System.out.println("Bio for " + currentUser.getUsername() + ": " + bio);
     currentUser.setBio(bio);
 
     currentUser.setFollowersCount(followersCount);
@@ -216,9 +216,9 @@ public class InstagramProfileUI extends UIManager {
     JPanel statsPanel = new JPanel();
     statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
     statsPanel.setBackground(new Color(249, 249, 249));
-    System.out.println(
-      "Number of posts for this user" + currentUser.getPostsCount()
-    );
+    // System.out.println(
+    //   "Number of posts for this user" + currentUser.getPostsCount()
+    // );
     statsPanel.add(
       createStatLabel(Integer.toString(currentUser.getPostsCount()), "Posts")
     );
@@ -307,7 +307,7 @@ public class InstagramProfileUI extends UIManager {
     profileNameLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10)); // Padding on the sides
 
     JTextArea profileBio = new JTextArea(currentUser.getBio());
-    System.out.println("This is the bio " + currentUser.getUsername());
+    // System.out.println("This is the bio " + currentUser.getUsername());
     profileBio.setEditable(false);
     profileBio.setFont(new Font("Arial", Font.PLAIN, 12));
     profileBio.setBackground(new Color(249, 249, 249));

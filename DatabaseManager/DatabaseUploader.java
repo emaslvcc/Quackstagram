@@ -143,6 +143,44 @@ public class DatabaseUploader {
     }
   }
 
+  public static void updateMultipleCredentials() {
+    try (Statement stmt = conn.createStatement()) {
+      Path filePath = Paths.get("data/comments.txt");
+      Charset charset = StandardCharsets.UTF_8;
+
+      try (
+        BufferedReader bufferedReader = Files.newBufferedReader(
+          filePath,
+          charset
+        )
+      ) {
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+          String[] separated = line.split("; ");
+          String image_owner = separated[0];
+          String image_commenter = separated[1];
+          String image_id = separated[2];
+          String comment = separated[3];
+          String values =
+            "values('" +
+            image_owner +
+            "', '" +
+            image_commenter +
+            "', '" +
+            image_id +
+            "', '" +
+            comment +
+            "')";
+          stmt.executeUpdate("insert into COMMENTS " + values);
+        }
+      } catch (IOException ex) {
+        System.out.format("I/O error: %s%n", ex);
+      }
+    } catch (SQLException e) {
+      DatabaseUploader.printSQLException(e);
+    }
+  }
+
   public static void printSQLException(SQLException ex) {
     for (Throwable e : ex) {
       if (e instanceof SQLException) {
