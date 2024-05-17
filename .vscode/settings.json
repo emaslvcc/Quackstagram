@@ -5,5 +5,8 @@
     "jdk.*",
     "org.graalvm.*",
     "io.micrometer.shaded.*"
+  ],
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar"
   ]
 }
