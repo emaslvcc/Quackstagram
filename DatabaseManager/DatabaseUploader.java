@@ -118,6 +118,7 @@ public class DatabaseUploader {
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
+    System.out.println("All comments uploaded to database.");
   }
 
   public void updateComment(
@@ -141,6 +142,7 @@ public class DatabaseUploader {
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
+    System.out.println("Comment uploaded to database.");
   }
 
   public static void updateMultipleCredentials() {
