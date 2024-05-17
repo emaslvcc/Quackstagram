@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -58,7 +59,12 @@ public class CommentsUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
           String comment = newCommentField.getText();
-          ImageCommentsManager.postComment(comment, imageId);
+          try {
+            ImageCommentsManager.postComment(comment, imageId);
+          } catch (ClassNotFoundException | SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          }
           saveDetails(imageId);
           updateFile(imageId);
         }

@@ -1,10 +1,12 @@
 package PostManager;
 
+import DatabaseManager.DatabaseUploader;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JLabel;
@@ -132,10 +134,12 @@ public class ImageCommentsManager {
     }
   }
 
-  public static void postComment(String comment, String imageId) {
+  public static void postComment(String comment, String imageId)
+    throws ClassNotFoundException, SQLException {
     String currentUser = retrieveUser();
     String imageOwner = retrieveImageOwner(imageId);
-
+    DatabaseUploader db = new DatabaseUploader();
+    db.updateComment(imageOwner, currentUser, imageId, comment);
     try (
       BufferedWriter commentsWriter = Files.newBufferedWriter(
         Paths.get("data", "comments.txt"),
