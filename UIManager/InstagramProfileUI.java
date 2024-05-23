@@ -1,5 +1,6 @@
 package UIManager;
 
+import DatabaseManager.DatabaseUploader;
 import UserManager.User;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.stream.Stream;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -41,12 +43,14 @@ public class InstagramProfileUI extends UIManager {
   private User currentUser; // User object to store the current user's information
   private String pageName = "Profile";
 
-  public InstagramProfileUI(User user) {
+  public InstagramProfileUI(User user)
+    throws ClassNotFoundException, SQLException {
     this.currentUser = user;
     // Initialize counts
     int imageCount = 0;
     int followersCount = 0;
     int followingCount = 0;
+    DatabaseUploader db = new DatabaseUploader();
 
     // Step 1: Read image_details.txt to count the number of images posted by the user
     Path imageDetailsFilePath = Paths.get("img", "image_details.txt");
@@ -65,53 +69,13 @@ public class InstagramProfileUI extends UIManager {
       e.printStackTrace();
     }
 
-    // Step 2: Read following.txt to calculate followers and following
-    Path followingFilePath = Paths.get("data", "following.txt");
-    try (
-      BufferedReader followingReader = Files.newBufferedReader(
-        followingFilePath
-      )
-    ) {
-      String line;
-      while ((line = followingReader.readLine()) != null) {
-        String[] parts = line.split(":");
-        if (parts.length == 2) {
-          String username = parts[0].trim();
-          String[] followingUsers = parts[1].split(";");
-          if (username.equals(currentUser.getUsername())) {
-            followingCount = followingUsers.length;
-          } else {
-            for (String followingUser : followingUsers) {
-              if (followingUser.trim().equals(currentUser.getUsername())) {
-                followersCount++;
-              }
-            }
-          }
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    // Step 2: Get followers
 
-    String bio = "";
+    int[] followStats = db.getUserStats(currentUser.getUsername());
+    followingCount = followStats[0];
+    followersCount = followStats[1];
 
-    Path bioDetailsFilePath = Paths.get("data", "credentials.txt");
-    try (
-      BufferedReader bioDetailsReader = Files.newBufferedReader(
-        bioDetailsFilePath
-      )
-    ) {
-      String line;
-      while ((line = bioDetailsReader.readLine()) != null) {
-        String[] parts = line.split(":");
-        if (parts[0].equals(currentUser.getUsername()) && parts.length >= 3) {
-          bio = parts[2];
-          break; // Exit the loop once the matching bio is found
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    String bio = db.getUserBio(currentUser.getUsername());
 
     // System.out.println("Bio for " + currentUser.getUsername() + ": " + bio);
     currentUser.setBio(bio);
@@ -134,7 +98,7 @@ public class InstagramProfileUI extends UIManager {
     initializeUI();
   }
 
-  public InstagramProfileUI() {
+  public InstagramProfileUI() throws ClassNotFoundException, SQLException {
     setTitle("DACS Profile");
     setSize(WIDTH, HEIGHT);
     setMinimumSize(new Dimension(WIDTH, HEIGHT));
@@ -162,9 +126,11 @@ public class InstagramProfileUI extends UIManager {
     repaint();
   }
 
-  protected JPanel createProfileHeaderPanel() {
+  protected JPanel createProfileHeaderPanel()
+    throws ClassNotFoundException, SQLException {
     boolean isCurrentUser = false;
     String loggedInUsername = "";
+    DatabaseUploader db = new DatabaseUploader();
 
     // Read the logged-in user's username from users.txt
     try (
@@ -247,26 +213,16 @@ public class InstagramProfileUI extends UIManager {
       followButton = new JButton("Follow");
 
       // Check if the current user is already being followed by the logged-in user
-      Path followingFilePath = Paths.get("data", "following.txt");
-      try (BufferedReader reader = Files.newBufferedReader(followingFilePath)) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-          String[] parts = line.split(":");
-          if (parts[0].trim().equals(loggedInUsername)) {
-            String[] followedUsers = parts[1].split(";");
-            for (String followedUser : followedUsers) {
-              if (followedUser.trim().equals(currentUser.getUsername())) {
-                followButton.setText("Following");
-                break;
-              }
-            }
-          }
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (db.alreadyFollowed(loggedInUsername, currentUser.getUsername())) {
+        followButton.setText("Following");
       }
       followButton.addActionListener(e -> {
-        handleFollowAction(currentUser.getUsername());
+        try {
+          handleFollowAction(currentUser.getUsername());
+        } catch (ClassNotFoundException | SQLException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        }
         followButton.setText("Following");
       });
     }
@@ -327,10 +283,12 @@ public class InstagramProfileUI extends UIManager {
     return headerPanel;
   }
 
-  private void handleFollowAction(String usernameToFollow) {
-    Path followingFilePath = Paths.get("data", "following.txt");
+  private void handleFollowAction(String usernameToFollow)
+    throws ClassNotFoundException, SQLException {
     Path usersFilePath = Paths.get("data", "users.txt");
     String currentUserUsername = "";
+
+    DatabaseUploader db = new DatabaseUploader();
 
     try {
       // Read the current user's username from users.txt
@@ -342,50 +300,9 @@ public class InstagramProfileUI extends UIManager {
         }
       }
 
+      db.follow(currentUserUsername, usernameToFollow);
+
       System.out.println("Real user is " + currentUserUsername);
-      // If currentUserUsername is not empty, process following.txt
-      if (!currentUserUsername.isEmpty()) {
-        boolean found = false;
-        StringBuilder newContent = new StringBuilder();
-
-        // Read and process following.txt
-        if (Files.exists(followingFilePath)) {
-          try (
-            BufferedReader reader = Files.newBufferedReader(followingFilePath)
-          ) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-              String[] parts = line.split(":");
-              if (parts[0].trim().equals(currentUserUsername)) {
-                found = true;
-                if (!line.contains(usernameToFollow)) {
-                  line =
-                    line
-                      .concat(line.endsWith(":") ? "" : "; ")
-                      .concat(usernameToFollow);
-                }
-              }
-              newContent.append(line).append("\n");
-            }
-          }
-        }
-
-        // If the current user was not found in following.txt, add them
-        if (!found) {
-          newContent
-            .append(currentUserUsername)
-            .append(": ")
-            .append(usernameToFollow)
-            .append("\n");
-        }
-
-        // Write the updated content back to following.txt
-        try (
-          BufferedWriter writer = Files.newBufferedWriter(followingFilePath)
-        ) {
-          writer.write(newContent.toString());
-        }
-      }
     } catch (IOException e) {
       e.printStackTrace();
     }

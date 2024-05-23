@@ -1,5 +1,7 @@
 package DatabaseManager;
 
+import PostManager.Post;
+import UserManager.User;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -8,7 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.Properties;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class DatabaseUploader {
 
@@ -20,10 +24,10 @@ public class DatabaseUploader {
 
   public static void main(String[] args)
     throws SQLException, ClassNotFoundException {
-    conn = getConnection();
-    // createTable();
-    // populateTable();
-    updateMultipleComments();
+    // conn = getConnection();
+    // updateMultipleCredentials();
+    // updateMultiplePosts();
+    // updateMultipleComments();
   }
 
   public static Connection getConnection()
@@ -40,46 +44,6 @@ public class DatabaseUploader {
 
     System.out.println("Connected to database.");
     return conn;
-  }
-
-  public static void createTable() throws SQLException {
-    String createString =
-      "create table if not exists COFFEES (" +
-      "COF_NAME varchar(32) NOT NULL, " +
-      "SUP_ID int NOT NULL, " +
-      "PRICE numeric(10,2) NOT NULL, " +
-      "SALES integer NOT NULL, " +
-      "TOTAL integer NOT NULL, " +
-      "PRIMARY KEY (COF_NAME) " +
-      "); ";
-    try (Statement stmt = conn.createStatement()) {
-      stmt.executeUpdate(createString);
-    } catch (SQLException e) {
-      DatabaseUploader.printSQLException(e);
-    }
-  }
-
-  public static void populateTable() throws SQLException {
-    try (Statement stmt = conn.createStatement()) {
-      stmt.executeUpdate(
-        "insert into COFFEES " + "values('Colombian', 00101, 7.99, 0, 0)"
-      );
-      stmt.executeUpdate(
-        "insert into COFFEES " + "values('French_Roast', 00049, 8.99, 0, 0)"
-      );
-      stmt.executeUpdate(
-        "insert into COFFEES " + "values('Espresso', 00150, 9.99, 0, 0)"
-      );
-      stmt.executeUpdate(
-        "insert into COFFEES " + "values('Colombian_Decaf', 00101, 8.99, 0, 0)"
-      );
-      stmt.executeUpdate(
-        "insert into COFFEES " +
-        "values('French_Roast_Decaf', 00049, 9.99, 0, 0)"
-      );
-    } catch (SQLException e) {
-      DatabaseUploader.printSQLException(e);
-    }
   }
 
   public static void updateMultipleComments() {
@@ -118,23 +82,21 @@ public class DatabaseUploader {
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
-    System.out.println("All comments uploaded to database.");
+    System.out.println("All comments added to database.");
   }
 
-  public void updateComment(
-    String imageOwner,
-    String currentUser,
-    String imageId,
-    String comment
-  ) {
+  public void updateComment(String currentUser, String postId, String comment) {
+    String timestamp = LocalDateTime
+      .now()
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     try (Statement stmt = conn.createStatement()) {
       String values =
         "values('" +
-        imageOwner +
-        "', '" +
         currentUser +
         "', '" +
-        imageId +
+        timestamp +
+        "', '" +
+        postId +
         "', '" +
         comment +
         "')";
@@ -142,12 +104,195 @@ public class DatabaseUploader {
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
-    System.out.println("Comment uploaded to database.");
+    System.out.println("Comment added to database.");
   }
 
-  public static void updateMultipleCredentials() {
+  public boolean doesUsernameExist(String username) {
+    String query = "SELECT 1 FROM users WHERE username = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, username);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          System.out.println("Username already exists.");
+          return true;
+        } else {
+          System.out.println("Username does not exist.");
+          return false;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public boolean addUser(
+    String username,
+    String password,
+    String bio,
+    String accountType
+  ) {
+    String query =
+      "INSERT INTO users (username, pw, bio, account_type) " +
+      "VALUES (?, ?, ?, ?)";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, username);
+      preparedStatement.setString(2, password);
+      preparedStatement.setString(3, bio);
+      preparedStatement.setString(4, accountType);
+      int rowsAffected = preparedStatement.executeUpdate();
+      if (rowsAffected > 0) {
+        System.out.println("User added.");
+        return true;
+      } else {
+        System.out.println("Failed to add user.");
+        return false;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public boolean verifyCredentials(String username, String password) {
+    String query = "SELECT 1 FROM users WHERE username = ? AND pw = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, username);
+      preparedStatement.setString(2, password);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          System.out.println("Credentials verified");
+          return true;
+        } else {
+          System.out.println("Invalid credentials");
+          return false;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public User getUser(String username) {
+    String query =
+      "SELECT username, pw, bio, account_type FROM users WHERE username = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, username);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          String retrievedUsername = resultSet.getString("username");
+          String retrievedPassword = resultSet.getString("pw");
+          String retrievedBio = resultSet.getString("bio");
+          String retrievedAccountType = resultSet.getString("account_type");
+          System.out.println("User information retrieved.");
+          return new User(
+            retrievedUsername,
+            retrievedPassword,
+            retrievedBio,
+            retrievedAccountType
+          );
+        } else {
+          System.out.println("User not found");
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  public String getUserBio(String username) {
+    String query = "SELECT bio FROM users WHERE username = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, username);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          String bio = resultSet.getString("bio");
+          System.out.println("Bio retrieved.");
+          return bio;
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  public void like(String liker, String postId) {
     try (Statement stmt = conn.createStatement()) {
-      Path filePath = Paths.get("data/comments.txt");
+      String values = "values('" + liker + "', '" + postId + "')";
+      stmt.executeUpdate("insert into LIKES " + values);
+    } catch (SQLException e) {
+      DatabaseUploader.printSQLException(e);
+    }
+    System.out.println("Like added to database.");
+  }
+
+  public boolean alreadyLiked(String userId, String postId) {
+    String query =
+      "SELECT 1 FROM likes WHERE liker_user_id = ? AND post_id = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, userId);
+      preparedStatement.setString(2, postId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          System.out.println("Already liked.");
+          return true;
+        } else {
+          System.out.println("Not liked.");
+          return false;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public List<String[]> getLikesByUserId(String userId) {
+    List<String[]> likes = new ArrayList<>();
+    String query =
+      "SELECT likes.post_id, likes.liker_user_id " +
+      "FROM likes " +
+      "INNER JOIN posts ON likes.post_id = posts.post_id " +
+      "WHERE posts.user_id = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, userId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        while (resultSet.next()) {
+          String likerUserId = resultSet.getString("liker_user_id");
+          likes.add(new String[] { likerUserId });
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      // Handle exception (you might want to log this or rethrow as a custom exception)
+    }
+    System.out.println("Likes retrieved.");
+    return likes;
+  }
+
+  public void follow(String follower, String following) {
+    String timestamp = LocalDateTime
+      .now()
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    try (Statement stmt = conn.createStatement()) {
+      String values =
+        "values('" + follower + "', '" + following + "', '" + timestamp + "')";
+      stmt.executeUpdate("insert into FOLLOWS " + values);
+    } catch (SQLException e) {
+      DatabaseUploader.printSQLException(e);
+    }
+    System.out.println("Follow added to database.");
+  }
+
+  public static void updateMultiplePosts() {
+    try (Statement stmt = conn.createStatement()) {
+      Path filePath = Paths.get("img/image_details.txt");
       Charset charset = StandardCharsets.UTF_8;
 
       try (
@@ -158,22 +303,45 @@ public class DatabaseUploader {
       ) {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-          String[] separated = line.split("; ");
-          String image_owner = separated[0];
-          String image_commenter = separated[1];
-          String image_id = separated[2];
-          String comment = separated[3];
+          String[] details = line.split(", ");
+          String imageID = "";
+          String username = "";
+          String caption = "";
+          String timestamp = "";
+          int likes = 0;
+          int comments = 0;
+
+          for (String detail : details) {
+            if (detail.startsWith("ImageID: ")) {
+              imageID = detail.substring("ImageID: ".length());
+            } else if (detail.startsWith("Username: ")) {
+              username = detail.substring("Username: ".length());
+            } else if (detail.startsWith("Bio: ")) {
+              caption = detail.substring("Bio: ".length());
+            } else if (detail.startsWith("Timestamp: ")) {
+              timestamp = detail.substring("Timestamp: ".length());
+            } else if (detail.startsWith("Likes: ")) {
+              likes = Integer.parseInt(detail.substring("Likes: ".length()));
+            } else if (detail.startsWith("Comments: ")) {
+              comments =
+                Integer.parseInt(detail.substring("Comments: ".length()));
+            }
+          }
           String values =
             "values('" +
-            image_owner +
+            imageID +
             "', '" +
-            image_commenter +
+            username +
             "', '" +
-            image_id +
+            caption +
             "', '" +
-            comment +
+            likes +
+            "', '" +
+            comments +
+            "', '" +
+            timestamp +
             "')";
-          stmt.executeUpdate("insert into COMMENTS " + values);
+          stmt.executeUpdate("insert into POSTS " + values);
         }
       } catch (IOException ex) {
         System.out.format("I/O error: %s%n", ex);
@@ -181,6 +349,214 @@ public class DatabaseUploader {
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
+    System.out.println("All posts added to database.");
+  }
+
+  public boolean alreadyFollowed(String follower, String following) {
+    String query =
+      "SELECT 1 FROM follows WHERE follower_user_id = ? AND following_user_id = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, follower);
+      preparedStatement.setString(2, following);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          System.out.println("Already followed.");
+          return true;
+        } else {
+          System.out.println("Not followed.");
+          return false;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public int[] getUserStats(String userId) {
+    int[] stats = new int[2];
+    String query =
+      "SELECT followers_count, following_count FROM users WHERE username = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, userId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          stats[0] = resultSet.getInt("followers_count");
+          stats[1] = resultSet.getInt("following_count");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return stats;
+  }
+
+  public String getFollowingUserIds(String followerUserId) {
+    StringBuilder followingUserIds = new StringBuilder();
+    String query =
+      "SELECT following_user_id FROM follows WHERE follower_user_id = ?";
+
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, followerUserId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        while (resultSet.next()) {
+          if (followingUserIds.length() > 0) {
+            followingUserIds.append(",");
+          }
+          followingUserIds.append(resultSet.getString("following_user_id"));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return followingUserIds.toString();
+  }
+
+  public List<Post> getAllPosts() {
+    List<Post> posts = new ArrayList<>();
+    String query =
+      "SELECT post_id, user_id, caption, like_count, comment_count FROM posts";
+
+    try (
+      PreparedStatement preparedStatement = conn.prepareStatement(query);
+      ResultSet resultSet = preparedStatement.executeQuery()
+    ) {
+      while (resultSet.next()) {
+        String postId = resultSet.getString("post_id");
+        String userId = resultSet.getString("user_id");
+        String caption = resultSet.getString("caption");
+        int likeCount = resultSet.getInt("like_count");
+        int commentCount = resultSet.getInt("comment_count");
+
+        Post post = new Post(postId, userId, caption, likeCount, commentCount);
+        posts.add(post);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return posts;
+  }
+
+  public static void updateMultipleCredentials() {
+    try (Statement stmt = conn.createStatement()) {
+      Path filePath = Paths.get("data/credentials.txt");
+      Charset charset = StandardCharsets.UTF_8;
+
+      try (
+        BufferedReader bufferedReader = Files.newBufferedReader(
+          filePath,
+          charset
+        )
+      ) {
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+          String[] separated = line.split(":");
+          String username = separated[0];
+          String pw = separated[1];
+          String bio = separated[2];
+          String account_type = separated[3];
+          int followers_count = getFollowersCount(username);
+          int following_count = getFollowingCount(username);
+          int post_count = getPostCount(username);
+          String values =
+            "values('" +
+            username +
+            "', '" +
+            pw +
+            "', '" +
+            bio +
+            "', '" +
+            account_type +
+            "', '" +
+            followers_count +
+            "', '" +
+            following_count +
+            "', '" +
+            post_count +
+            "')";
+          stmt.executeUpdate("insert into users " + values);
+        }
+      } catch (IOException ex) {
+        System.out.format("I/O error: %s%n", ex);
+      }
+    } catch (SQLException e) {
+      DatabaseUploader.printSQLException(e);
+    }
+    System.out.println("All users added to database.");
+  }
+
+  public static int getPostCount(String username) {
+    int imageCount = 0;
+    Path imageDetailsFilePath = Paths.get("img", "image_details.txt");
+    try (
+      BufferedReader imageDetailsReader = Files.newBufferedReader(
+        imageDetailsFilePath
+      )
+    ) {
+      String line;
+      while ((line = imageDetailsReader.readLine()) != null) {
+        if (line.contains("Username: " + username)) {
+          imageCount++;
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return imageCount;
+  }
+
+  public static int getFollowersCount(String currentUser) {
+    Path followingFilePath = Paths.get("data", "following.txt");
+    int followersCount = 0;
+    try (
+      BufferedReader followingReader = Files.newBufferedReader(
+        followingFilePath
+      )
+    ) {
+      String line;
+      while ((line = followingReader.readLine()) != null) {
+        String[] parts = line.split(":");
+        if (parts.length == 2) {
+          String username = parts[0].trim();
+          String[] followingUsers = parts[1].split(";");
+          if (username.equals(currentUser)) {} else {
+            for (String followingUser : followingUsers) {
+              if (followingUser.trim().equals(currentUser)) {
+                followersCount++;
+              }
+            }
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return followersCount;
+  }
+
+  public static int getFollowingCount(String currentUser) {
+    Path followingFilePath = Paths.get("data", "following.txt");
+    int followingCount = 0;
+    try (
+      BufferedReader followingReader = Files.newBufferedReader(
+        followingFilePath
+      )
+    ) {
+      String line;
+      while ((line = followingReader.readLine()) != null) {
+        String[] parts = line.split(":");
+        if (parts.length == 2) {
+          String username = parts[0].trim();
+          String[] followingUsers = parts[1].split(";");
+          if (username.equals(currentUser)) {
+            followingCount = followingUsers.length;
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return followingCount;
   }
 
   public static void printSQLException(SQLException ex) {

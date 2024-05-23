@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -121,14 +122,21 @@ public abstract class UIManager extends JFrame {
       IconButtonCreator.createIconButton(
         profile,
         "profile",
-        e -> openProfileUI()
+        e -> {
+          try {
+            openProfileUI();
+          } catch (ClassNotFoundException | SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          }
+        }
       )
     );
 
     return navigationPanel;
   }
 
-  protected void openProfileUI() {
+  protected void openProfileUI() throws ClassNotFoundException, SQLException {
     // Open InstagramProfileUI frame
     this.dispose();
     String loggedInUsername = "";

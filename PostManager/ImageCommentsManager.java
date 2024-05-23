@@ -137,22 +137,7 @@ public class ImageCommentsManager {
   public static void postComment(String comment, String imageId)
     throws ClassNotFoundException, SQLException {
     String currentUser = retrieveUser();
-    String imageOwner = retrieveImageOwner(imageId);
-    comment = comment.replaceAll("[\'\"]", "");
     DatabaseUploader db = new DatabaseUploader();
-    db.updateComment(imageOwner, currentUser, imageId, comment);
-    try (
-      BufferedWriter commentsWriter = Files.newBufferedWriter(
-        Paths.get("data", "comments.txt"),
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND
-      )
-    ) {
-      commentsWriter.write(
-        imageOwner + "; " + currentUser + "; " + imageId + "; " + comment + "\n"
-      );
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    db.updateComment(currentUser, imageId, comment.replaceAll("[\']", "\'\'"));
   }
 }

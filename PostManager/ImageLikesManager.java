@@ -1,10 +1,12 @@
 package PostManager;
 
+import DatabaseManager.DatabaseUploader;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JLabel;
@@ -32,24 +34,15 @@ public class ImageLikesManager {
     this.currentUser = currentUser;
   }
 
-  public void handleLikeAction(String imageId, JLabel likesLabel) {
-    if (alreadyLiked(imageId, currentUser)) return;
+  public void handleLikeAction(String imageId, JLabel likesLabel)
+    throws ClassNotFoundException, SQLException {
+    DatabaseUploader db = new DatabaseUploader();
+    if (db.alreadyLiked(currentUser, imageId)) return;
     currentUser = retrieveUser();
     // imageOwner = retrieveImageOwner();
     updateImageDetails(imageId, likesLabel);
     updateNotifications(imageId, comment);
-  }
-
-  public boolean alreadyLiked(String imageId, String currentUser) {
-    try (BufferedReader reader = Files.newBufferedReader(notificationsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains(imageId) && line.contains(currentUser)) return true;
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return false;
+    db.like(currentUser, imageId);
   }
 
   public String retrieveUser() {

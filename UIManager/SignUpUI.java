@@ -1,5 +1,6 @@
 package UIManager;
 
+import DatabaseManager.DatabaseUploader;
 import UserManager.LoginProxy;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -44,7 +46,6 @@ public class SignUpUI extends UIManager {
   private JButton btnRegister, btnUploadPhoto, btnSignIn;
   private JPasswordField password;
   private JLabel lblPhoto;
-  private final String credentialsFilePath = "data/credentials.txt";
   private final String profilePhotoStoragePath = "img/storage/profile/";
   private String accountType = "Member";
 
@@ -141,7 +142,14 @@ public class SignUpUI extends UIManager {
 
     // Register button with black text
     btnRegister = new JButton("Register");
-    btnRegister.addActionListener(this::onRegisterClicked);
+    btnRegister.addActionListener(e -> {
+      try {
+        onRegisterClicked(e);
+      } catch (ClassNotFoundException | SQLException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+    });
     btnRegister.setBackground(new Color(255, 90, 95)); // Use a red color that matches the mockup
     btnRegister.setForeground(Color.BLACK); // Set the text color to black
     btnRegister.setFocusPainted(false);
@@ -168,12 +176,14 @@ public class SignUpUI extends UIManager {
     registerPanel.add(btnSignIn, BorderLayout.SOUTH);
   }
 
-  private void onRegisterClicked(ActionEvent event) {
+  private void onRegisterClicked(ActionEvent event)
+    throws ClassNotFoundException, SQLException {
     String username = txtUsername.getText();
     String passwordToSave = String.valueOf(password.getPassword());
     String bio = txtBio.getText();
+    DatabaseUploader db = new DatabaseUploader();
 
-    if (doesUsernameExist(username)) {
+    if (db.doesUsernameExist(username)) {
       JOptionPane.showMessageDialog(
         this,
         "Username already exists. Please choose a different username.",
@@ -181,7 +191,7 @@ public class SignUpUI extends UIManager {
         JOptionPane.ERROR_MESSAGE
       );
     } else {
-      LoginProxy.saveCredentials(username, passwordToSave, bio, accountType);
+      db.addUser(username, passwordToSave, bio, accountType);
       handleProfilePictureUpload();
       dispose();
 
@@ -191,24 +201,6 @@ public class SignUpUI extends UIManager {
         signInFrame.setVisible(true);
       });
     }
-  }
-
-  private boolean doesUsernameExist(String username) {
-    try (
-      BufferedReader reader = new BufferedReader(
-        new FileReader(credentialsFilePath)
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.startsWith(username + ":")) {
-          return true;
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return false;
   }
 
   // Method to handle profile picture upload

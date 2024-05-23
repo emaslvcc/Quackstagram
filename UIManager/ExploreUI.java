@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -213,9 +214,15 @@ public class ExploreUI extends UIManager {
 
     usernameLabel.addActionListener(e -> {
       User user = new User(finalUsername); // Assuming User class has a constructor that takes a username
-      InstagramProfileUI profileUI = new InstagramProfileUI(user);
-      profileUI.setVisible(true);
-      dispose(); // Close the current frame
+      InstagramProfileUI profileUI;
+      try {
+        profileUI = new InstagramProfileUI(user);
+        profileUI.setVisible(true);
+        dispose(); // Close the current frame
+      } catch (ClassNotFoundException | SQLException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
     });
 
     // Container panel for image and details

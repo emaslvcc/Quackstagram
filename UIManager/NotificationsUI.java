@@ -1,14 +1,17 @@
 package UIManager;
 
+import DatabaseManager.DatabaseUploader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -67,79 +70,38 @@ public class NotificationsUI extends UIManager {
       e.printStackTrace();
     }
 
-    try (
-      BufferedReader reader = Files.newBufferedReader(
-        Paths.get("data", "notifications.txt")
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        String[] parts = line.split(";");
-        if (parts[0].trim().equals(currentUsername)) {
-          // Format the notification message
-          String userWhoLiked = parts[1].trim();
-          String imageId = parts[2].trim();
-          String timestamp = parts[3].trim();
-          String notificationMessage =
-            userWhoLiked +
-            " liked your picture - " +
-            getElapsedTime(timestamp) +
-            " ago";
-
-          // Add the notification to the panel
-          JPanel notificationPanel = new JPanel(new BorderLayout());
-          notificationPanel.setBorder(
-            BorderFactory.createEmptyBorder(5, 10, 5, 10)
-          );
-
-          JLabel notificationLabel = new JLabel(notificationMessage);
-          notificationPanel.add(notificationLabel, BorderLayout.CENTER);
-
-          // Add profile icon (if available) and timestamp
-          // ... (Additional UI components if needed)
-
-          contentPanel.add(notificationPanel);
-        }
-      }
-    } catch (IOException e) {
+    List<String[]> likes = null;
+    DatabaseUploader db;
+    try {
+      db = new DatabaseUploader();
+      likes = db.getLikesByUserId(currentUsername);
+    } catch (ClassNotFoundException | SQLException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     }
+
+    for (String[] like : likes) {
+      String likerUserId = like[0];
+      String notificationMessage = likerUserId + " liked your picture!";
+
+      // Add the notification to the panel
+      JPanel notificationPanel = new JPanel(new BorderLayout());
+      notificationPanel.setBorder(
+        BorderFactory.createEmptyBorder(5, 10, 5, 10)
+      );
+
+      JLabel notificationLabel = new JLabel(notificationMessage);
+      notificationPanel.add(notificationLabel, BorderLayout.CENTER);
+
+      // Add profile icon (if available) and timestamp
+      // ... (Additional UI components if needed)
+
+      contentPanel.add(notificationPanel);
+    }
+
     // Add panels to frame
     add(headerPanel, BorderLayout.NORTH);
     add(scrollPane, BorderLayout.CENTER);
     add(navigationPanel, BorderLayout.SOUTH);
-  }
-
-  private String getElapsedTime(String timestamp) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-      "yyyy-MM-dd HH:mm:ss"
-    );
-    LocalDateTime timeOfNotification = LocalDateTime.parse(
-      timestamp,
-      formatter
-    );
-    LocalDateTime currentTime = LocalDateTime.now();
-
-    long daysBetween = ChronoUnit.DAYS.between(timeOfNotification, currentTime);
-    long minutesBetween =
-      ChronoUnit.MINUTES.between(timeOfNotification, currentTime) % 60;
-
-    StringBuilder timeElapsed = new StringBuilder();
-    if (daysBetween > 0) {
-      timeElapsed
-        .append(daysBetween)
-        .append(" day")
-        .append(daysBetween > 1 ? "s" : "");
-    }
-    if (minutesBetween > 0) {
-      if (daysBetween > 0) {
-        timeElapsed.append(" and ");
-      }
-      timeElapsed
-        .append(minutesBetween)
-        .append(" minute")
-        .append(minutesBetween > 1 ? "s" : "");
-    }
-    return timeElapsed.toString();
   }
 }

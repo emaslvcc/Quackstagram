@@ -1,6 +1,8 @@
 package UIManager;
 
+import DatabaseManager.DatabaseUploader;
 import PostManager.ImageLikesManager;
+import PostManager.Post;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -17,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -81,8 +85,15 @@ public class QuackstagramHomeUI extends UIManager {
       ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
     ); // Never allow
     // horizontal scrolling
-    String[][] sampleData = createSampleData();
-    populateContentPanel(contentPanel, sampleData);
+    String[][] sampleData;
+    try {
+      sampleData = createSampleData();
+      populateContentPanel(contentPanel, sampleData);
+    } catch (ClassNotFoundException | SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
     add(scrollPane, BorderLayout.CENTER);
 
     // Set up the home panel
@@ -131,7 +142,12 @@ public class QuackstagramHomeUI extends UIManager {
           @Override
           public void actionPerformed(ActionEvent e) {
             ImageLikesManager likesManager = new ImageLikesManager(currentUser);
-            likesManager.handleLikeAction(imageId, likesLabel);
+            try {
+              likesManager.handleLikeAction(imageId, likesLabel);
+            } catch (ClassNotFoundException | SQLException e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
           }
         }
       );
@@ -183,7 +199,8 @@ public class QuackstagramHomeUI extends UIManager {
     }
   }
 
-  private String[][] createSampleData() {
+  private String[][] createSampleData()
+    throws ClassNotFoundException, SQLException {
     currentUser = "";
     try (
       BufferedReader reader = Files.newBufferedReader(
@@ -198,55 +215,30 @@ public class QuackstagramHomeUI extends UIManager {
       e.printStackTrace();
     }
 
-    String followedUsers = "";
-    try (
-      BufferedReader reader = Files.newBufferedReader(
-        Paths.get("data", "following.txt")
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.startsWith(currentUser + ":")) {
-          followedUsers = line.split(":")[1].trim();
-          break;
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    DatabaseUploader db = new DatabaseUploader();
+    String followedUsers = db.getFollowingUserIds(currentUser);
 
     // Temporary structure to hold the data
     String[][] tempData = new String[100][]; // Assuming a maximum of 100 posts for simplicity
     int count = 0;
 
-    try (
-      BufferedReader reader = Files.newBufferedReader(
-        Paths.get("img", "image_details.txt")
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null && count < tempData.length) {
-        String[] details = line.split(", ");
-        String imagePoster = details[1].split(": ")[1];
-        if (followedUsers.contains(imagePoster)) {
-          String imagePath =
-            "img/uploaded/" + details[0].split(": ")[1] + ".png"; // Assuming PNG format
-          String description = details[2].split(": ")[1];
-          String likes = "Likes: " + details[4].split(": ")[1];
-          String comments = "Comments: " + details[5].split(": ")[1];
+    List<Post> posts = db.getAllPosts();
+    for (Post post : posts) {
+      if (followedUsers.contains(post.getUserId())) {
+        String imagePath = "img/uploaded/" + post.getPostId() + ".png"; // Assuming PNG format
+        String description = post.getCaption();
+        String likes = "Likes: " + post.getLikeCount();
+        String comments = "Comments: " + post.getCommentCount();
 
-          tempData[count++] =
-            new String[] {
-              imagePoster,
-              description,
-              likes,
-              comments,
-              imagePath,
-            };
-        }
+        tempData[count++] =
+          new String[] {
+            post.getUserId(),
+            description,
+            likes,
+            comments,
+            imagePath,
+          };
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
 
     // Transfer the data to the final array
@@ -259,7 +251,7 @@ public class QuackstagramHomeUI extends UIManager {
   private void displayImage(String[] postData) {
     imageViewPanel.removeAll(); // Clear previous content
 
-    String imageId = new File(postData[3]).getName().split("\\.")[0];
+    String imageId = new File(postData[4]).getName().split("\\.")[0];
     JLabel likesLabel = new JLabel(postData[2]); // Update this line
 
     // Display the image
@@ -290,7 +282,12 @@ public class QuackstagramHomeUI extends UIManager {
         @Override
         public void actionPerformed(ActionEvent e) {
           ImageLikesManager likesManager = new ImageLikesManager(imageId);
-          likesManager.handleLikeAction(imageId, likesLabel); // Update this line
+          try {
+            likesManager.handleLikeAction(imageId, likesLabel);
+          } catch (ClassNotFoundException | SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          } // Update this line
           refreshDisplayImage(postData, imageId); // Refresh the view
         }
       }
