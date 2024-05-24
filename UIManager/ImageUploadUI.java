@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -15,10 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,7 +35,6 @@ public class ImageUploadUI extends UIManager {
   private JTextArea bioTextArea;
   private JButton uploadButton;
   private JButton saveButton;
-  private boolean imageUploaded = false;
   private JPanel headerPanel;
   private String pageName = "Upload Image";
 
@@ -170,9 +165,6 @@ public class ImageUploadUI extends UIManager {
         }
 
         imagePreviewLabel.setIcon(imageIcon);
-
-        // Update the flag to indicate that an image has been uploaded
-        imageUploaded = true;
 
         // Change the text of the upload button
         uploadButton.setText("Upload Another Image");

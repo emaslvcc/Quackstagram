@@ -316,26 +316,6 @@ public class QuackstagramHomeUI extends UIManager {
   }
 
   private void refreshDisplayImage(String[] postData, String imageId) {
-    // Read updated likes count from image_details.txt
-    // try (
-    //   BufferedReader reader = Files.newBufferedReader(
-    //     Paths.get("img", "image_details.txt")
-    //   )
-    // ) {
-    //   String line;
-    //   while ((line = reader.readLine()) != null) {
-    //     if (line.contains("ImageID: " + imageId)) {
-    //       String likes = line.split(", ")[4].split(": ")[1];
-    //       String comments = line.split(", ")[5].split(": ")[1];
-    //       postData[2] = "Likes: " + likes;
-    //       postData[3] = "Comments: " + comments;
-    //       break;
-    //     }
-    //   }
-    // } catch (IOException e) {
-    //   e.printStackTrace();
-    // }
-    // Call displayImage with updated postData
     displayImage(postData);
   }
 }

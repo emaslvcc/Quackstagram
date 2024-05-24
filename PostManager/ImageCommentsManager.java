@@ -3,12 +3,8 @@ package PostManager;
 import DatabaseManager.DatabaseUploader;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JLabel;
 
 /**
@@ -16,14 +12,8 @@ import javax.swing.JLabel;
  */
 public class ImageCommentsManager {
 
-  private static StringBuilder newContent = new StringBuilder();
-  private static boolean updated = false;
   private static String currentUser = "";
   private static String imageOwner = "";
-  private static String comment = "";
-  private static String timestamp = LocalDateTime
-    .now()
-    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
   public static void handleCommentAction(String imageId, JLabel commentsLabel) {
     currentUser = retrieveUser();
@@ -53,21 +43,6 @@ public class ImageCommentsManager {
     return imageOwner;
   }
 
-  // public static String retrieveImageOwner(String imageId) {
-  //   try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-  //     String line;
-  //     while ((line = reader.readLine()) != null) {
-  //       if (line.contains("ImageID: " + imageId)) {
-  //         String[] parts = line.split(", ");
-  //         imageOwner = parts[1].split(": ")[1];
-  //       }
-  //     }
-  //   } catch (IOException e) {
-  //     e.printStackTrace();
-  //   }
-  //   return imageOwner;
-  // }
-
   public static String retrieveUser() {
     try (
       BufferedReader userReader = Files.newBufferedReader(
@@ -89,29 +64,7 @@ public class ImageCommentsManager {
     DatabaseUploader db = new DatabaseUploader();
     int comments = db.getCommentCount(imageId);
     commentsLabel.setText("Comments: " + comments);
-    updated = true;
   }
-
-  // public static void updateNotifications(String imageId, String comment) {
-  //   String notification = String.format(
-  //     "%s; %s; %s; %s\n",
-  //     imageOwner,
-  //     currentUser,
-  //     imageId,
-  //     timestamp
-  //   );
-  //   try (
-  //     BufferedWriter notificationWriter = Files.newBufferedWriter(
-  //       Paths.get("data", "notifications.txt"),
-  //       StandardOpenOption.CREATE,
-  //       StandardOpenOption.APPEND
-  //     )
-  //   ) {
-  //     notificationWriter.write(notification);
-  //   } catch (IOException e) {
-  //     e.printStackTrace();
-  //   }
-  // }
 
   public static void postComment(String comment, String imageId)
     throws ClassNotFoundException, SQLException {

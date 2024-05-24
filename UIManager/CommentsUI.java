@@ -5,12 +5,6 @@ import PostManager.ImageCommentsManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -25,10 +19,6 @@ public class CommentsUI extends JFrame {
   private JPanel newCommentsPanel;
   private JButton postButton;
   private JLabel commentsLabel;
-
-  private static StringBuilder newContent = new StringBuilder();
-  private static boolean updated = false;
-  private static int commentsCount;
 
   private ArrayList<String> user = new ArrayList<>();
   private ArrayList<String> comments = new ArrayList<>();

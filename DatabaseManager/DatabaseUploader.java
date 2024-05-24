@@ -4,8 +4,6 @@ import PostManager.Post;
 import UserManager.User;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,9 +23,6 @@ public class DatabaseUploader {
   public static void main(String[] args)
     throws SQLException, ClassNotFoundException {
     // conn = getConnection();
-    // updateMultipleCredentials();
-    // updateMultiplePosts();
-    // updateMultipleComments();
   }
 
   public static Connection getConnection()
@@ -44,45 +39,6 @@ public class DatabaseUploader {
 
     System.out.println("Connected to database.");
     return conn;
-  }
-
-  public static void updateMultipleComments() {
-    try (Statement stmt = conn.createStatement()) {
-      Path filePath = Paths.get("data/comments.txt");
-      Charset charset = StandardCharsets.UTF_8;
-
-      try (
-        BufferedReader bufferedReader = Files.newBufferedReader(
-          filePath,
-          charset
-        )
-      ) {
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-          String[] separated = line.split("; ");
-          String image_owner = separated[0];
-          String image_commenter = separated[1];
-          String image_id = separated[2];
-          String comment = separated[3];
-          String values =
-            "values('" +
-            image_owner +
-            "', '" +
-            image_commenter +
-            "', '" +
-            image_id +
-            "', '" +
-            comment +
-            "')";
-          stmt.executeUpdate("insert into COMMENTS " + values);
-        }
-      } catch (IOException ex) {
-        System.out.format("I/O error: %s%n", ex);
-      }
-    } catch (SQLException e) {
-      DatabaseUploader.printSQLException(e);
-    }
-    System.out.println("All comments added to database.");
   }
 
   public void updateComment(String currentUser, String postId, String comment) {
@@ -343,68 +299,6 @@ public class DatabaseUploader {
       DatabaseUploader.printSQLException(e);
     }
     System.out.println("Follow added to database.");
-  }
-
-  public static void updateMultiplePosts() {
-    try (Statement stmt = conn.createStatement()) {
-      Path filePath = Paths.get("img/image_details.txt");
-      Charset charset = StandardCharsets.UTF_8;
-
-      try (
-        BufferedReader bufferedReader = Files.newBufferedReader(
-          filePath,
-          charset
-        )
-      ) {
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-          String[] details = line.split(", ");
-          String imageID = "";
-          String username = "";
-          String caption = "";
-          String timestamp = "";
-          int likes = 0;
-          int comments = 0;
-
-          for (String detail : details) {
-            if (detail.startsWith("ImageID: ")) {
-              imageID = detail.substring("ImageID: ".length());
-            } else if (detail.startsWith("Username: ")) {
-              username = detail.substring("Username: ".length());
-            } else if (detail.startsWith("Bio: ")) {
-              caption = detail.substring("Bio: ".length());
-            } else if (detail.startsWith("Timestamp: ")) {
-              timestamp = detail.substring("Timestamp: ".length());
-            } else if (detail.startsWith("Likes: ")) {
-              likes = Integer.parseInt(detail.substring("Likes: ".length()));
-            } else if (detail.startsWith("Comments: ")) {
-              comments =
-                Integer.parseInt(detail.substring("Comments: ".length()));
-            }
-          }
-          String values =
-            "values('" +
-            imageID +
-            "', '" +
-            username +
-            "', '" +
-            caption +
-            "', '" +
-            likes +
-            "', '" +
-            comments +
-            "', '" +
-            timestamp +
-            "')";
-          stmt.executeUpdate("insert into POSTS " + values);
-        }
-      } catch (IOException ex) {
-        System.out.format("I/O error: %s%n", ex);
-      }
-    } catch (SQLException e) {
-      DatabaseUploader.printSQLException(e);
-    }
-    System.out.println("All posts added to database.");
   }
 
   public boolean alreadyFollowed(String follower, String following) {
