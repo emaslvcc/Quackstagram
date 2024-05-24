@@ -1,5 +1,6 @@
 package UIManager;
 
+import DatabaseManager.DatabaseUploader;
 import UserManager.User;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -85,7 +86,12 @@ public class ExploreUI extends UIManager {
             new MouseAdapter() {
               @Override
               public void mouseClicked(MouseEvent e) {
-                displayImage(imageFile.getPath()); // Call method to display the clicked image
+                try {
+                  displayImage(imageFile.getPath());
+                } catch (ClassNotFoundException | SQLException e1) {
+                  // TODO Auto-generated catch block
+                  e1.printStackTrace();
+                } // Call method to display the clicked image
               }
             }
           );
@@ -111,7 +117,8 @@ public class ExploreUI extends UIManager {
     return mainContentPanel;
   }
 
-  private void displayImage(String imagePath) {
+  private void displayImage(String imagePath)
+    throws ClassNotFoundException, SQLException {
     getContentPane().removeAll();
     setLayout(new BorderLayout());
 
@@ -123,28 +130,12 @@ public class ExploreUI extends UIManager {
     String imageId = new File(imagePath).getName().split("\\.")[0];
 
     // Read image details
-    String username = "";
-    String bio = "";
-    String timestampString = "";
-    int likes = 0;
-    Path detailsPath = Paths.get("img", "image_details.txt");
-    try (Stream<String> lines = Files.lines(detailsPath)) {
-      String details = lines
-        .filter(line -> line.contains("ImageID: " + imageId))
-        .findFirst()
-        .orElse("");
-      if (!details.isEmpty()) {
-        String[] parts = details.split(", ");
-        username = parts[1].split(": ")[1];
-        bio = parts[2].split(": ")[1];
-        System.out.println(bio + "this is where you get an error " + parts[3]);
-        timestampString = parts[3].split(": ")[1];
-        likes = Integer.parseInt(parts[4].split(": ")[1]);
-      }
-    } catch (IOException ex) {
-      ex.printStackTrace();
-      // Handle exception
-    }
+    DatabaseUploader db = new DatabaseUploader();
+    String[] postDetails = db.getPostDetails(imageId);
+    String username = postDetails[0];
+    String bio = postDetails[1];
+    int likes = Integer.parseInt(postDetails[2]);
+    String timestampString = postDetails[3];
 
     // Calculate time since posting
     String timeSincePosting = null;

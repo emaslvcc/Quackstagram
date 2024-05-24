@@ -272,6 +272,15 @@ public class DatabaseUploader {
     try (Statement stmt = conn.createStatement()) {
       String values = "values('" + liker + "', '" + postId + "')";
       stmt.executeUpdate("insert into LIKES " + values);
+      // Increment the comment_count in the POSTS table
+      String updatePostQuery =
+        "UPDATE posts SET like_count = like_count + 1 WHERE post_id = ?";
+      try (
+        PreparedStatement updateStmt = conn.prepareStatement(updatePostQuery)
+      ) {
+        updateStmt.setString(1, postId);
+        updateStmt.executeUpdate();
+      }
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
@@ -483,72 +492,79 @@ public class DatabaseUploader {
     return posts;
   }
 
-  public static void updateMultipleCredentials() {
-    try (Statement stmt = conn.createStatement()) {
-      Path filePath = Paths.get("data/credentials.txt");
-      Charset charset = StandardCharsets.UTF_8;
+  public String[] getPostDetails(String postId) {
+    String query =
+      "SELECT user_id, caption, like_count, timestamp FROM posts WHERE post_id = ?";
+    String[] postDetails = new String[4];
 
-      try (
-        BufferedReader bufferedReader = Files.newBufferedReader(
-          filePath,
-          charset
-        )
-      ) {
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-          String[] separated = line.split(":");
-          String username = separated[0];
-          String pw = separated[1];
-          String bio = separated[2];
-          String account_type = separated[3];
-          int followers_count = getFollowersCount(username);
-          int following_count = getFollowingCount(username);
-          int post_count = getPostCount(username);
-          String values =
-            "values('" +
-            username +
-            "', '" +
-            pw +
-            "', '" +
-            bio +
-            "', '" +
-            account_type +
-            "', '" +
-            followers_count +
-            "', '" +
-            following_count +
-            "', '" +
-            post_count +
-            "')";
-          stmt.executeUpdate("insert into users " + values);
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, postId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          postDetails[0] = resultSet.getString("user_id");
+          postDetails[1] = resultSet.getString("caption");
+          postDetails[2] = resultSet.getString("like_count");
+          postDetails[3] = resultSet.getString("timestamp");
         }
-      } catch (IOException ex) {
-        System.out.format("I/O error: %s%n", ex);
       }
     } catch (SQLException e) {
-      DatabaseUploader.printSQLException(e);
+      printSQLException(e);
     }
-    System.out.println("All users added to database.");
+
+    return postDetails;
   }
 
-  public static int getPostCount(String username) {
-    int imageCount = 0;
-    Path imageDetailsFilePath = Paths.get("img", "image_details.txt");
-    try (
-      BufferedReader imageDetailsReader = Files.newBufferedReader(
-        imageDetailsFilePath
-      )
-    ) {
-      String line;
-      while ((line = imageDetailsReader.readLine()) != null) {
-        if (line.contains("Username: " + username)) {
-          imageCount++;
+  public void addPost(String postId, String userId, String caption) {
+    String timestamp = LocalDateTime
+      .now()
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    String query =
+      "INSERT INTO posts (post_id, user_id, caption, timestamp) VALUES (?, ?, ?, ?)";
+
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, postId);
+      preparedStatement.setString(2, userId);
+      preparedStatement.setString(3, caption);
+      preparedStatement.setString(4, timestamp);
+      preparedStatement.executeUpdate();
+    } catch (SQLException e) {
+      printSQLException(e);
+    }
+    System.out.println("Post added to database.");
+  }
+
+  public String getUserIdFromPostId(String postId) {
+    String userId = null;
+    String query = "SELECT user_id FROM posts WHERE post_id = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, postId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          userId = resultSet.getString("user_id");
         }
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (SQLException e) {
+      printSQLException(e);
     }
-    return imageCount;
+    return userId;
+  }
+
+  public int getPostCount(String userId) {
+    int postCount = 0;
+    String query = "SELECT COUNT(*) AS count FROM posts WHERE user_id = ?";
+
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, userId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          postCount = resultSet.getInt("count");
+        }
+      }
+    } catch (SQLException e) {
+      printSQLException(e);
+    }
+
+    return postCount;
   }
 
   public static int getFollowersCount(String currentUser) {

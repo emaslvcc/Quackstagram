@@ -1,5 +1,6 @@
 package UIManager;
 
+import DatabaseManager.DatabaseUploader;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -15,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
@@ -127,13 +129,17 @@ public class ImageUploadUI extends UIManager {
         );
 
         // Save the bio and image ID to a text file
-        saveImageInfo(
-          username + "_" + imageId,
-          username,
-          bioTextArea.getText()
-        );
+        try {
+          saveImageInfo(
+            username + "_" + imageId,
+            username,
+            bioTextArea.getText()
+          );
+        } catch (ClassNotFoundException | SQLException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
 
-        // Load the image from the saved path
         ImageIcon imageIcon = new ImageIcon(destPath.toString());
 
         // Check if imagePreviewLabel has a valid size
@@ -219,33 +225,9 @@ public class ImageUploadUI extends UIManager {
   }
 
   private void saveImageInfo(String imageId, String username, String bio)
-    throws IOException {
-    Path infoFilePath = Paths.get("img", "image_details.txt");
-    if (!Files.exists(infoFilePath)) {
-      Files.createFile(infoFilePath);
-    }
-
-    String timestamp = LocalDateTime
-      .now()
-      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-    try (
-      BufferedWriter writer = Files.newBufferedWriter(
-        infoFilePath,
-        StandardOpenOption.APPEND
-      )
-    ) {
-      writer.write(
-        String.format(
-          "ImageID: %s, Username: %s, Bio: %s, Timestamp: %s, Likes: 0, Comments: 0",
-          imageId,
-          username,
-          bio,
-          timestamp
-        )
-      );
-      writer.newLine();
-    }
+    throws IOException, ClassNotFoundException, SQLException {
+    DatabaseUploader db = new DatabaseUploader();
+    db.addPost(imageId, username, bio);
   }
 
   private String getFileExtension(File file) {

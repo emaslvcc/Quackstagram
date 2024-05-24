@@ -119,16 +119,6 @@ public class QuackstagramHomeUI extends UIManager {
       imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add border to image label
       String imageId = new File(postData[4]).getName().split("\\.")[0];
 
-      // Debugging: Print the file path
-      System.out.println("Image path: " + postData[4]);
-      System.out.println(imageId);
-
-      // Ensure the image file exists
-      File imageFile = new File(postData[4]);
-      if (!imageFile.exists()) {
-        System.out.println("Image file does not exist: " + postData[4]);
-      }
-
       ImageIcon imageIcon = new ImageIcon(
         new ImageIcon(postData[4])
           .getImage()
@@ -273,16 +263,6 @@ public class QuackstagramHomeUI extends UIManager {
     JLabel fullSizeImageLabel = new JLabel();
     fullSizeImageLabel.setHorizontalAlignment(JLabel.CENTER);
 
-    // Debugging: Print the file path
-    System.out.println("Image path: " + postData[4]);
-
-    // Ensure the image file exists
-    File imageFile = new File(postData[4]);
-    if (!imageFile.exists()) {
-      System.out.println("Image file does not exist: " + postData[4]);
-      return;
-    }
-
     ImageIcon imageIcon = new ImageIcon(
       new ImageIcon(postData[4])
         .getImage()
@@ -337,24 +317,24 @@ public class QuackstagramHomeUI extends UIManager {
 
   private void refreshDisplayImage(String[] postData, String imageId) {
     // Read updated likes count from image_details.txt
-    try (
-      BufferedReader reader = Files.newBufferedReader(
-        Paths.get("img", "image_details.txt")
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains("ImageID: " + imageId)) {
-          String likes = line.split(", ")[4].split(": ")[1];
-          String comments = line.split(", ")[5].split(": ")[1];
-          postData[2] = "Likes: " + likes;
-          postData[3] = "Comments: " + comments;
-          break;
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    // try (
+    //   BufferedReader reader = Files.newBufferedReader(
+    //     Paths.get("img", "image_details.txt")
+    //   )
+    // ) {
+    //   String line;
+    //   while ((line = reader.readLine()) != null) {
+    //     if (line.contains("ImageID: " + imageId)) {
+    //       String likes = line.split(", ")[4].split(": ")[1];
+    //       String comments = line.split(", ")[5].split(": ")[1];
+    //       postData[2] = "Likes: " + likes;
+    //       postData[3] = "Comments: " + comments;
+    //       break;
+    //     }
+    //   }
+    // } catch (IOException e) {
+    //   e.printStackTrace();
+    // }
     // Call displayImage with updated postData
     displayImage(postData);
   }

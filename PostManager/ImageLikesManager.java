@@ -16,11 +16,6 @@ import javax.swing.JLabel;
  */
 public class ImageLikesManager {
 
-  private static Path detailsPath = Paths.get("img", "image_details.txt");
-  private static Path notificationsPath = Paths.get(
-    "data",
-    "notifications.txt"
-  );
   private static StringBuilder newContent = new StringBuilder();
   private static boolean updated = false;
   private String currentUser = "";
@@ -40,8 +35,8 @@ public class ImageLikesManager {
     if (db.alreadyLiked(currentUser, imageId)) return;
     currentUser = retrieveUser();
     // imageOwner = retrieveImageOwner();
-    updateImageDetails(imageId, likesLabel);
-    updateNotifications(imageId, comment);
+    // updateImageDetails(imageId, likesLabel);
+    // updateNotifications(imageId, comment);
     db.like(currentUser, imageId);
   }
 
@@ -60,63 +55,24 @@ public class ImageLikesManager {
     }
     return currentUser;
   }
-
-  public void updateImageDetails(String imageId, JLabel likesLabel) {
-    updated = false;
-
-    // Clear newContent StringBuilder
-    newContent.setLength(0);
-
-    // Read and update image_details.txt
-    try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains("ImageID: " + imageId)) {
-          String[] parts = line.split(", ");
-          imageOwner = parts[1].split(": ")[1];
-          int likes = Integer.parseInt(parts[4].split(": ")[1]);
-          likes++; // Increment the likes count
-          parts[4] = "Likes: " + likes;
-          line = String.join(", ", parts);
-
-          // Update the UI
-          likesLabel.setText("Likes: " + likes);
-          updated = true;
-        }
-        newContent.append(line).append("\n");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Write updated likes back to image_details.txt
-    if (updated) {
-      try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
-        writer.write(newContent.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  public void updateNotifications(String imageId, String comment) {
-    String notification = String.format(
-      "%s; %s; %s; %s\n",
-      imageOwner,
-      currentUser,
-      imageId,
-      timestamp
-    );
-    try (
-      BufferedWriter notificationWriter = Files.newBufferedWriter(
-        Paths.get("data", "notifications.txt"),
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND
-      )
-    ) {
-      notificationWriter.write(notification);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
+  // public void updateNotifications(String imageId, String comment) {
+  //   String notification = String.format(
+  //     "%s; %s; %s; %s\n",
+  //     imageOwner,
+  //     currentUser,
+  //     imageId,
+  //     timestamp
+  //   );
+  //   try (
+  //     BufferedWriter notificationWriter = Files.newBufferedWriter(
+  //       Paths.get("data", "notifications.txt"),
+  //       StandardOpenOption.CREATE,
+  //       StandardOpenOption.APPEND
+  //     )
+  //   ) {
+  //     notificationWriter.write(notification);
+  //   } catch (IOException e) {
+  //     e.printStackTrace();
+  //   }
+  // }
 }

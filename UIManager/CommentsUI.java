@@ -25,7 +25,6 @@ public class CommentsUI extends JFrame {
   private JPanel newCommentsPanel;
   private JButton postButton;
   private JLabel commentsLabel;
-  private static Path detailsPath = Paths.get("img", "image_details.txt");
 
   private static StringBuilder newContent = new StringBuilder();
   private static boolean updated = false;
@@ -106,36 +105,4 @@ public class CommentsUI extends JFrame {
     string.append("</html>");
     commentsLabel.setText(string.toString());
   }
-  // public void updateFile(String imageId) {
-  //   updated = false;
-  //   newContent.setLength(0);
-
-  //   try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-  //     String line;
-  //     while ((line = reader.readLine()) != null) {
-  //       if (line.contains("ImageID: " + imageId)) {
-  //         String[] parts = line.split(", ");
-  //         commentsCount = Integer.parseInt(parts[5].split(": ")[1]);
-  //         commentsCount++; // Increment the comment count
-  //         parts[5] = "Comments: " + commentsCount;
-  //         line = String.join(", ", parts);
-
-  //         // Update the UI
-  //         updated = true;
-  //       }
-  //       newContent.append(line).append("\n");
-  //     }
-  //   } catch (IOException e) {
-  //     e.printStackTrace();
-  //   }
-
-  //   // Write updated likes back to image_details.txt
-  //   if (updated) {
-  //     try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
-  //       writer.write(newContent.toString());
-  //     } catch (IOException e) {
-  //       e.printStackTrace();
-  //     }
-  //   }
-  // }
 }

@@ -52,22 +52,8 @@ public class InstagramProfileUI extends UIManager {
     int followingCount = 0;
     DatabaseUploader db = new DatabaseUploader();
 
-    // Step 1: Read image_details.txt to count the number of images posted by the user
-    Path imageDetailsFilePath = Paths.get("img", "image_details.txt");
-    try (
-      BufferedReader imageDetailsReader = Files.newBufferedReader(
-        imageDetailsFilePath
-      )
-    ) {
-      String line;
-      while ((line = imageDetailsReader.readLine()) != null) {
-        if (line.contains("Username: " + currentUser.getUsername())) {
-          imageCount++;
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    // Step 1: Get image count
+    imageCount = db.getPostCount(currentUser.getUsername());
 
     // Step 2: Get followers
 
