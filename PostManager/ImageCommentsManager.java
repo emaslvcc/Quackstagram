@@ -11,8 +11,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
 
+import DatabaseManager.UpdateDatabase;
+
 public class ImageCommentsManager {
 
+  private static int count = 0;
   private static Path detailsPath = Paths.get("img", "image_details.txt");
   private static StringBuilder newContent = new StringBuilder();
   private static boolean updated = false;
@@ -132,21 +135,11 @@ public class ImageCommentsManager {
   }
 
   public static void postComment(String comment, String imageId) {
+    count++;
     String currentUser = retrieveUser();
     String imageOwner = retrieveImageOwner(imageId);
-
-    try (
-      BufferedWriter commentsWriter = Files.newBufferedWriter(
-        Paths.get("data", "comments.txt"),
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND
-      )
-    ) {
-      commentsWriter.write(
-        imageOwner + "; " + currentUser + "; " + imageId + "; " + comment + "\n"
-      );
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    String comment_id = imageOwner + "_" + count;
+    System.out.println("!!!!!");
+    UpdateDatabase.updateComments(comment_id, imageId, comment, currentUser);
   }
 }

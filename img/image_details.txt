@@ -1,11 +1,11 @@
-ImageID: Lorin_1, Username: Lorin, Bio: In the cookie jar my hand was not., Timestamp: 2023-12-17 19:07:43, Likes: 1, Comments: 1
-ImageID: Lorin_2, Username: Lorin, Bio: Meditate I must., Timestamp: 2023-12-17 19:09:35, Likes: 0, Comments: 1
+ImageID: Lorin_1, Username: Lorin, Bio: In the cookie jar my hand was not., Timestamp: 2023-12-17 19:07:43, Likes: 1, Comments: 4
+ImageID: Lorin_2, Username: Lorin, Bio: Meditate I must., Timestamp: 2023-12-17 19:09:35, Likes: 0, Comments: 2
 ImageID: Xylo_1, Username: Xylo, Bio: My tea strong as Force is., Timestamp: 2023-12-17 19:22:40, Likes: 4, Comments: 2
 ImageID: Xylo_2, Username: Xylo, Bio: Jedi mind trick failed., Timestamp: 2023-12-17 19:23:14, Likes: 3, Comments: 0
 ImageID: Zara_1, Username: Zara, Bio: Lost my map I have. Oops., Timestamp: 2023-12-17 19:24:31, Likes: 1, Comments: 0
 ImageID: Zara_2, Username: Zara, Bio: Yoga with Yoda, Timestamp: 2023-12-17 19:25:03, Likes: 0, Comments: 0
 ImageID: Mystar_1, Username: Mystar, Bio: Cookies gone? , Timestamp: 2023-12-17 19:26:50, Likes: 1, Comments: 0
 ImageID: Mystar_2, Username: Mystar, Bio: In my soup a fly is., Timestamp: 2023-12-17 19:27:24, Likes: 0, Comments: 0
-ImageID: NFTKing_1, Username: NFTKing, Bio: join my discord $50 per month, Timestamp: 2024-03-28 20:31:38, Likes: 1, Comments: 1
-ImageID: NFTKing_2, Username: NFTKing, Bio: only lost 99% on this guy!, Timestamp: 2024-03-28 20:32:14, Likes: 1, Comments: 1
+ImageID: NFTKing_1, Username: NFTKing, Bio: join my discord $50 per month, Timestamp: 2024-03-28 20:31:38, Likes: 1, Comments: 3
+ImageID: NFTKing_2, Username: NFTKing, Bio: only lost 99% on this guy!, Timestamp: 2024-03-28 20:32:14, Likes: 1, Comments: 2
 ImageID: buh_1, Username: buh, Bio: buh, Timestamp: 2024-03-28 20:34:46, Likes: 0, Comments: 0
