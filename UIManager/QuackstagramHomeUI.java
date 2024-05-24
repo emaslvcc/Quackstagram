@@ -119,6 +119,16 @@ public class QuackstagramHomeUI extends UIManager {
       imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add border to image label
       String imageId = new File(postData[4]).getName().split("\\.")[0];
 
+      // Debugging: Print the file path
+      System.out.println("Image path: " + postData[4]);
+      System.out.println(imageId);
+
+      // Ensure the image file exists
+      File imageFile = new File(postData[4]);
+      if (!imageFile.exists()) {
+        System.out.println("Image file does not exist: " + postData[4]);
+      }
+
       ImageIcon imageIcon = new ImageIcon(
         new ImageIcon(postData[4])
           .getImage()
@@ -165,7 +175,12 @@ public class QuackstagramHomeUI extends UIManager {
           @Override
           public void actionPerformed(ActionEvent e) {
             CommentsUI comments = new CommentsUI(imageId);
-            comments.saveDetails(imageId);
+            try {
+              comments.saveDetails(imageId);
+            } catch (ClassNotFoundException | SQLException e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
             comments.setVisible(true);
           }
         }
@@ -257,6 +272,16 @@ public class QuackstagramHomeUI extends UIManager {
     // Display the image
     JLabel fullSizeImageLabel = new JLabel();
     fullSizeImageLabel.setHorizontalAlignment(JLabel.CENTER);
+
+    // Debugging: Print the file path
+    System.out.println("Image path: " + postData[4]);
+
+    // Ensure the image file exists
+    File imageFile = new File(postData[4]);
+    if (!imageFile.exists()) {
+      System.out.println("Image file does not exist: " + postData[4]);
+      return;
+    }
 
     ImageIcon imageIcon = new ImageIcon(
       new ImageIcon(postData[4])

@@ -29,7 +29,12 @@ public class ImageCommentsManager {
   public static void handleCommentAction(String imageId, JLabel commentsLabel) {
     currentUser = retrieveUser();
     imageOwner = retrieveImageOwner();
-    updateImageDetails(imageId, commentsLabel);
+    try {
+      updateImageDetails(imageId, commentsLabel);
+    } catch (ClassNotFoundException | SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     updateNotifications(imageId, comment);
   }
 
@@ -80,28 +85,33 @@ public class ImageCommentsManager {
     return currentUser;
   }
 
-  public static void updateImageDetails(String imageId, JLabel commentsLabel) {
+  public static void updateImageDetails(String imageId, JLabel commentsLabel)
+    throws ClassNotFoundException, SQLException {
     // Read and update image_details.txt
-    try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains("ImageID: " + imageId)) {
-          String[] parts = line.split(", ");
-          imageOwner = parts[1].split(": ")[1];
-          int comments = Integer.parseInt(parts[5].split(": ")[1]);
-          comments++; // Increment the likes count
-          parts[5] = "Comments: " + comments;
-          line = String.join(", ", parts);
+    DatabaseUploader db = new DatabaseUploader();
+    int comments = db.getCommentCount(imageId);
+    commentsLabel.setText("Comments: " + comments);
+    updated = true;
+    // try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
+    //   String line;
+    //   while ((line = reader.readLine()) != null) {
+    //     if (line.contains("ImageID: " + imageId)) {
+    //       String[] parts = line.split(", ");
+    //       imageOwner = parts[1].split(": ")[1];
+    //       int comments = Integer.parseInt(parts[5].split(": ")[1]);
+    //       comments++; // Increment the likes count
+    //       parts[5] = "Comments: " + comments;
+    //       line = String.join(", ", parts);
 
-          // Update the UI
-          commentsLabel.setText("Comments: " + comments);
-          updated = true;
-        }
-        newContent.append(line).append("\n");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    //       // Update the UI
+    //       commentsLabel.setText("Comments: " + comments);
+    //       updated = true;
+    //     }
+    //     newContent.append(line).append("\n");
+    //   }
+    // } catch (IOException e) {
+    //   e.printStackTrace();
+    // }
 
     // Write updated likes back to image_details.txt
     if (updated) {

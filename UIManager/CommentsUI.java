@@ -1,5 +1,6 @@
 package UIManager;
 
+import DatabaseManager.DatabaseUploader;
 import PostManager.ImageCommentsManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,7 +25,6 @@ public class CommentsUI extends JFrame {
   private JPanel newCommentsPanel;
   private JButton postButton;
   private JLabel commentsLabel;
-  private static Path commentsPath = Paths.get("data", "comments.txt");
   private static Path detailsPath = Paths.get("img", "image_details.txt");
 
   private static StringBuilder newContent = new StringBuilder();
@@ -65,8 +65,13 @@ public class CommentsUI extends JFrame {
             // TODO Auto-generated catch block
             e1.printStackTrace();
           }
-          saveDetails(imageId);
-          updateFile(imageId);
+          try {
+            saveDetails(imageId);
+          } catch (ClassNotFoundException | SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          }
+          // updateFile(imageId);
         }
       }
     );
@@ -76,26 +81,13 @@ public class CommentsUI extends JFrame {
     getContentPane().add(newCommentsPanel, BorderLayout.SOUTH);
   }
 
-  public void saveDetails(String imageId) {
+  public void saveDetails(String imageId)
+    throws ClassNotFoundException, SQLException {
     user.clear();
     comments.clear();
 
-    try (BufferedReader reader = Files.newBufferedReader(commentsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains(imageId)) {
-          String[] part = line.split("; ");
-          if (part.length >= 4) {
-            if (line.contains(imageId)) {
-              user.add(part[1]);
-              comments.add(part[3]);
-            }
-          }
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    DatabaseUploader db = new DatabaseUploader();
+    db.getComments(imageId, user, comments);
     displayComments(user, comments);
   }
 
@@ -114,37 +106,36 @@ public class CommentsUI extends JFrame {
     string.append("</html>");
     commentsLabel.setText(string.toString());
   }
+  // public void updateFile(String imageId) {
+  //   updated = false;
+  //   newContent.setLength(0);
 
-  public void updateFile(String imageId) {
-    updated = false;
-    newContent.setLength(0);
+  //   try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
+  //     String line;
+  //     while ((line = reader.readLine()) != null) {
+  //       if (line.contains("ImageID: " + imageId)) {
+  //         String[] parts = line.split(", ");
+  //         commentsCount = Integer.parseInt(parts[5].split(": ")[1]);
+  //         commentsCount++; // Increment the comment count
+  //         parts[5] = "Comments: " + commentsCount;
+  //         line = String.join(", ", parts);
 
-    try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains("ImageID: " + imageId)) {
-          String[] parts = line.split(", ");
-          commentsCount = Integer.parseInt(parts[5].split(": ")[1]);
-          commentsCount++; // Increment the comment count
-          parts[5] = "Comments: " + commentsCount;
-          line = String.join(", ", parts);
+  //         // Update the UI
+  //         updated = true;
+  //       }
+  //       newContent.append(line).append("\n");
+  //     }
+  //   } catch (IOException e) {
+  //     e.printStackTrace();
+  //   }
 
-          // Update the UI
-          updated = true;
-        }
-        newContent.append(line).append("\n");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Write updated likes back to image_details.txt
-    if (updated) {
-      try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
-        writer.write(newContent.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
+  //   // Write updated likes back to image_details.txt
+  //   if (updated) {
+  //     try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
+  //       writer.write(newContent.toString());
+  //     } catch (IOException e) {
+  //       e.printStackTrace();
+  //     }
+  //   }
+  // }
 }

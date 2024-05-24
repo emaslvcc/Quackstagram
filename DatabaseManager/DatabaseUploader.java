@@ -101,10 +101,56 @@ public class DatabaseUploader {
         comment +
         "')";
       stmt.executeUpdate("insert into COMMENTS " + values);
+
+      // Increment the comment_count in the POSTS table
+      String updatePostQuery =
+        "UPDATE posts SET comment_count = comment_count + 1 WHERE post_id = ?";
+      try (
+        PreparedStatement updateStmt = conn.prepareStatement(updatePostQuery)
+      ) {
+        updateStmt.setString(1, postId);
+        updateStmt.executeUpdate();
+      }
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
     System.out.println("Comment added to database.");
+  }
+
+  public void getComments(
+    String postId,
+    ArrayList<String> commenterUserIds,
+    ArrayList<String> comments
+  ) {
+    String query =
+      "SELECT commenter_user_id, comment FROM comments WHERE post_id = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, postId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        while (resultSet.next()) {
+          commenterUserIds.add(resultSet.getString("commenter_user_id"));
+          comments.add(resultSet.getString("comment"));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public int getCommentCount(String postId) {
+    int commentCount = 0;
+    String query = "SELECT COUNT(*) AS count FROM comments WHERE post_id = ?";
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, postId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          commentCount = resultSet.getInt("count");
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return commentCount;
   }
 
   public boolean doesUsernameExist(String username) {
