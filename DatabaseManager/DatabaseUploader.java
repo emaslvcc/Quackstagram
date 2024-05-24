@@ -32,7 +32,7 @@ public class DatabaseUploader {
     Class.forName("com.mysql.cj.jdbc.Driver");
     conn = DriverManager.getConnection(db_URL, connectionProps);
 
-    System.out.println("Connected to database.");
+    // System.out.println("Connected to database.");
     return conn;
   }
 
@@ -76,6 +76,7 @@ public class DatabaseUploader {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    System.out.println("Comments retrieved.");
   }
 
   public int getCommentCount(String postId) {
@@ -180,7 +181,7 @@ public class DatabaseUploader {
             retrievedAccountType
           );
         } else {
-          System.out.println("User not found");
+          System.out.println("User not found.");
           return null;
         }
       }
