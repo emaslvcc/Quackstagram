@@ -2,11 +2,6 @@ package DatabaseManager;
 
 import PostManager.Post;
 import UserManager.User;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,16 +52,6 @@ public class DatabaseUploader {
         comment +
         "')";
       stmt.executeUpdate("insert into COMMENTS " + values);
-
-      // Increment the comment_count in the POSTS table
-      String updatePostQuery =
-        "UPDATE posts SET comment_count = comment_count + 1 WHERE post_id = ?";
-      try (
-        PreparedStatement updateStmt = conn.prepareStatement(updatePostQuery)
-      ) {
-        updateStmt.setString(1, postId);
-        updateStmt.executeUpdate();
-      }
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
@@ -228,15 +213,6 @@ public class DatabaseUploader {
     try (Statement stmt = conn.createStatement()) {
       String values = "values('" + liker + "', '" + postId + "')";
       stmt.executeUpdate("insert into LIKES " + values);
-      // Increment the comment_count in the POSTS table
-      String updatePostQuery =
-        "UPDATE posts SET like_count = like_count + 1 WHERE post_id = ?";
-      try (
-        PreparedStatement updateStmt = conn.prepareStatement(updatePostQuery)
-      ) {
-        updateStmt.setString(1, postId);
-        updateStmt.executeUpdate();
-      }
     } catch (SQLException e) {
       DatabaseUploader.printSQLException(e);
     }
@@ -325,9 +301,13 @@ public class DatabaseUploader {
   public int[] getUserStats(String userId) {
     int[] stats = new int[2];
     String query =
-      "SELECT followers_count, following_count FROM users WHERE username = ?";
+      "SELECT " +
+      "(SELECT COUNT(*) FROM follows WHERE follower_user_id = ?) AS followers_count, " +
+      "(SELECT COUNT(*) FROM follows WHERE following_user_id = ?) AS following_count";
+
     try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
       preparedStatement.setString(1, userId);
+      preparedStatement.setString(2, userId);
       try (ResultSet resultSet = preparedStatement.executeQuery()) {
         if (resultSet.next()) {
           stats[0] = resultSet.getInt("followers_count");
@@ -361,10 +341,26 @@ public class DatabaseUploader {
     return followingUserIds.toString();
   }
 
+  public int getLikeCount(String postId) {
+    int likeCount = 0;
+    String query = "SELECT COUNT(*) FROM likes WHERE post_id = ?";
+
+    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+      preparedStatement.setString(1, postId);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          likeCount = resultSet.getInt(1);
+        }
+      }
+    } catch (SQLException e) {
+      printSQLException(e);
+    }
+    return likeCount;
+  }
+
   public List<Post> getAllPosts() {
     List<Post> posts = new ArrayList<>();
-    String query =
-      "SELECT post_id, user_id, caption, like_count, comment_count FROM posts";
+    String query = "SELECT post_id, user_id, caption FROM posts";
 
     try (
       PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -374,8 +370,8 @@ public class DatabaseUploader {
         String postId = resultSet.getString("post_id");
         String userId = resultSet.getString("user_id");
         String caption = resultSet.getString("caption");
-        int likeCount = resultSet.getInt("like_count");
-        int commentCount = resultSet.getInt("comment_count");
+        int likeCount = getLikeCount(postId);
+        int commentCount = getCommentCount(postId);
 
         Post post = new Post(postId, userId, caption, likeCount, commentCount);
         posts.add(post);
@@ -459,60 +455,6 @@ public class DatabaseUploader {
     }
 
     return postCount;
-  }
-
-  public static int getFollowersCount(String currentUser) {
-    Path followingFilePath = Paths.get("data", "following.txt");
-    int followersCount = 0;
-    try (
-      BufferedReader followingReader = Files.newBufferedReader(
-        followingFilePath
-      )
-    ) {
-      String line;
-      while ((line = followingReader.readLine()) != null) {
-        String[] parts = line.split(":");
-        if (parts.length == 2) {
-          String username = parts[0].trim();
-          String[] followingUsers = parts[1].split(";");
-          if (username.equals(currentUser)) {} else {
-            for (String followingUser : followingUsers) {
-              if (followingUser.trim().equals(currentUser)) {
-                followersCount++;
-              }
-            }
-          }
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return followersCount;
-  }
-
-  public static int getFollowingCount(String currentUser) {
-    Path followingFilePath = Paths.get("data", "following.txt");
-    int followingCount = 0;
-    try (
-      BufferedReader followingReader = Files.newBufferedReader(
-        followingFilePath
-      )
-    ) {
-      String line;
-      while ((line = followingReader.readLine()) != null) {
-        String[] parts = line.split(":");
-        if (parts.length == 2) {
-          String username = parts[0].trim();
-          String[] followingUsers = parts[1].split(";");
-          if (username.equals(currentUser)) {
-            followingCount = followingUsers.length;
-          }
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return followingCount;
   }
 
   public static void printSQLException(SQLException ex) {
