@@ -15,13 +15,14 @@ public class UserRelationshipManager {
   }
 
   // Method to follow a user
-  public void followUser(String follower, String followed) {
+  public void followUser(String follower, String followed, Timestamp followDate) {
     if (!isAlreadyFollowing(follower, followed)) {
       try (Connection conn = getConnection()) {
-        String query = "INSERT INTO user_following (username1, username2) VALUES (?, ?)";
+        String query = "INSERT INTO user_following (username1, username2, following_date) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
           stmt.setString(1, follower);
           stmt.setString(2, followed);
+          stmt.setTimestamp(3, followDate);
           stmt.executeUpdate();
         }
       } catch (SQLException e) {

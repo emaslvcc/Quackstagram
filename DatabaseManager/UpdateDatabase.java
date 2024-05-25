@@ -101,7 +101,7 @@ public class UpdateDatabase {
         }
     }
 
-    public static void updateUserFollowing(String username1, String username2) {
+    public static void updateUserFollowing(String username1, String username2, String following_date) {
         try  {
             if (myConn == null) {
                 myConn = getConnection();
@@ -115,6 +115,8 @@ public class UpdateDatabase {
             username1 +
             "', '" +
             username2 +
+            "', '" + 
+            following_date + 
             "')";
             stmt.executeUpdate("INSERT INTO user_following " + values);
         } catch (SQLException e) {

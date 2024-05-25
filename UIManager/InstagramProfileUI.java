@@ -20,6 +20,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
@@ -295,7 +298,9 @@ public class InstagramProfileUI extends UIManager {
 
             // If currentUserUsername is not empty, update the database
             if (!currentUserUsername.isEmpty()) {
-                UpdateDatabase.updateUserFollowing(currentUserUsername, usernameToFollow);
+                // Get the current timestamp and format it as a string
+                String currentTimestamp = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()).format(Instant.now());
+                UpdateDatabase.updateUserFollowing(currentUserUsername, usernameToFollow, currentTimestamp);
             }
         } catch (IOException e) {
             e.printStackTrace();
