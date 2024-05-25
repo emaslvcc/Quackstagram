@@ -23,68 +23,125 @@ public class UpdateDatabase {
     }
 
     public static Connection getConnection() {
-        try {String connectionUrl = "jdbc:mysql://localhost:3306/quack";
-        String username = "root";
-        String password = "";
+        try {
+            String connectionUrl = "jdbc:mysql://localhost:3306/quack";
+            String username = "root";
+            String password = "";
 
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", username);
-        connectionProps.put("password", password);
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        myConn = DriverManager.getConnection(connectionUrl, connectionProps);
-
-        System.out.println("Connection to Database Established");
-        System.out.println(myConn);
-        }
-        catch (Exception e) {
+            Properties connectionProps = new Properties();
+            connectionProps.put("user", username);
+            connectionProps.put("password", password);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(connectionUrl, connectionProps);
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return myConn;
     }
 
-    public static void updateComments(String comment_id, String post_id, String comment, String commenter) {
+    public static void updateComments(String time_stamp, String post_id, String comment, String commenter) {
         try  {
             if (myConn == null) {
                 myConn = getConnection();
             }
         } catch (Exception e) {
+        } 
 
-        }
-            
         try (Statement stmt = myConn.createStatement()) {
-            stmt.executeUpdate("INSERT INTO comments VALUES (" + comment_id + ", " + post_id + ", " + comment + ", " + commenter + ")");
+            String values =
+            "VALUES('" +
+            time_stamp +
+            "', '" +
+            post_id +
+            "', '" +
+            comment +
+            "', '" +
+            commenter+
+            "')";
+            stmt.executeUpdate("INSERT INTO comments " + values);
         } catch (SQLException e) {
             UpdateDatabase.printSQLException(e);
         }
     }
 
-    public static void updateLikes() {
+    public static void updateLikes(String imageId, String currentUser) {
+        String query = "INSERT INTO likes (post_id, liker) VALUES (?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, imageId);
+            pstmt.setString(2, currentUser);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updatePosts(String post_id, String owner, String caption, String time_stamp) {
+        try  {
+            if (myConn == null) {
+                myConn = getConnection();
+            }
+        } catch (Exception e) {
+        } 
+
         try (Statement stmt = myConn.createStatement()) {
-            stmt.executeUpdate("");
+            String values =
+            "VALUES('" +
+            post_id +
+            "', '" +
+            owner +
+            "', '" +
+            caption +
+            "', '" +
+            time_stamp +
+            "')";
+            stmt.executeUpdate("INSERT INTO posts " + values);
         } catch (SQLException e) {
             UpdateDatabase.printSQLException(e);
         }
     }
 
-    public static void updatePosts() {
+    public static void updateUserFollowing(String username1, String username2) {
+        try  {
+            if (myConn == null) {
+                myConn = getConnection();
+            }
+        } catch (Exception e) {
+        } 
+
         try (Statement stmt = myConn.createStatement()) {
-            stmt.executeUpdate("");
+            String values =
+            "VALUES('" +
+            username1 +
+            "', '" +
+            username2 +
+            "')";
+            stmt.executeUpdate("INSERT INTO user_following " + values);
         } catch (SQLException e) {
             UpdateDatabase.printSQLException(e);
         }
     }
 
-    public static void updateUserFollowing() {
-        try (Statement stmt = myConn.createStatement()) {
-            stmt.executeUpdate("");
-        } catch (SQLException e) {
-            UpdateDatabase.printSQLException(e);
-        }
-    }
+    public static void updateUserInfo(String username, String userpass, String userbio, String type_of_account) {
+        try  {
+            if (myConn == null) {
+                myConn = getConnection();
+            }
+        } catch (Exception e) {
+        } 
 
-    public static void updateUserInfo() {
         try (Statement stmt = myConn.createStatement()) {
-            stmt.executeUpdate("");
+            String values =
+            "VALUES('" +
+            username +
+            "', '" +
+            userpass +
+            "', '" +
+            userbio +
+            "', '" +
+            type_of_account +
+            "')";
+            stmt.executeUpdate("INSERT INTO user_info " + values);
         } catch (SQLException e) {
             UpdateDatabase.printSQLException(e);
         }

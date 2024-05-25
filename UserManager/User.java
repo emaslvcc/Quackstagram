@@ -4,7 +4,6 @@ import PostManager.Picture;
 import java.util.ArrayList;
 import java.util.List;
 
-// Represents a user on Quackstagram
 public class User {
 
   private String username;
@@ -21,7 +20,6 @@ public class User {
     this.bio = bio;
     this.password = password;
     this.pictures = new ArrayList<>();
-    // Initialize counts to 0
     this.postsCount = 0;
     this.followersCount = 0;
     this.followingCount = 0;
@@ -57,6 +55,10 @@ public class User {
 
   public String getType() {
     return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 
   public int getFollowersCount() {

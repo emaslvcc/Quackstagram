@@ -1,79 +1,89 @@
 package UserManager;
 
 import java.io.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserRelationshipManager {
 
-  private final String followersFilePath = "data/followers.txt";
+  private Connection getConnection() throws SQLException {
+    String connectionUrl = "jdbc:mysql://localhost:3306/quack";
+    String username = "root";
+    String password = "";
+    return DriverManager.getConnection(connectionUrl, username, password);
+  }
 
   // Method to follow a user
-  public void followUser(String follower, String followed) throws IOException {
+  public void followUser(String follower, String followed) {
     if (!isAlreadyFollowing(follower, followed)) {
-      try (
-        BufferedWriter writer = new BufferedWriter(
-          new FileWriter(followersFilePath, true)
-        )
-      ) {
-        writer.write(follower + ":" + followed);
-        writer.newLine();
+      try (Connection conn = getConnection()) {
+        String query = "INSERT INTO user_following (username1, username2) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+          stmt.setString(1, follower);
+          stmt.setString(2, followed);
+          stmt.executeUpdate();
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
       }
     }
   }
 
   // Method to check if a user is already following another user
-  private boolean isAlreadyFollowing(String follower, String followed)
-    throws IOException {
-    try (
-      BufferedReader reader = new BufferedReader(
-        new FileReader(followersFilePath)
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.equals(follower + ":" + followed)) {
-          return true;
+  private boolean isAlreadyFollowing(String follower, String followed) {
+    boolean isFollowing = false;
+    try (Connection conn = getConnection()) {
+      String query = "SELECT * FROM user_following WHERE username1 = ? AND username2 = ?";
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, follower);
+        stmt.setString(2, followed);
+        try (ResultSet rs = stmt.executeQuery()) {
+          if (rs.next()) {
+            isFollowing = true;
+          }
         }
       }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-    return false;
+    return isFollowing;
   }
 
   // Method to get the list of followers for a user
-  public List<String> getFollowers(String username) throws IOException {
+  public List<String> getFollowers(String username) {
     List<String> followers = new ArrayList<>();
-    try (
-      BufferedReader reader = new BufferedReader(
-        new FileReader(followersFilePath)
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        String[] parts = line.split(":");
-        if (parts[1].equals(username)) {
-          followers.add(parts[0]);
+    try (Connection conn = getConnection()) {
+      String query = "SELECT username1 FROM user_following WHERE username2 = ?";
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, username);
+        try (ResultSet rs = stmt.executeQuery()) {
+          while (rs.next()) {
+            followers.add(rs.getString("username1"));
+          }
         }
       }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
     return followers;
   }
 
   // Method to get the list of users a user is following
-  public List<String> getFollowing(String username) throws IOException {
+  public List<String> getFollowing(String username) {
     List<String> following = new ArrayList<>();
-    try (
-      BufferedReader reader = new BufferedReader(
-        new FileReader(followersFilePath)
-      )
-    ) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        String[] parts = line.split(":");
-        if (parts[0].equals(username)) {
-          following.add(parts[1]);
+    try (Connection conn = getConnection()) {
+      String query = "SELECT username2 FROM user_following WHERE username1 = ?";
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, username);
+        try (ResultSet rs = stmt.executeQuery()) {
+          while (rs.next()) {
+            following.add(rs.getString("username2"));
+          }
         }
       }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
     return following;
   }

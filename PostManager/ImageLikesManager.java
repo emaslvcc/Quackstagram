@@ -1,128 +1,99 @@
 package PostManager;
 
-import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
 import javax.swing.JLabel;
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import DatabaseManager.UpdateDatabase;
 
 public class ImageLikesManager {
 
-  private static Path detailsPath = Paths.get("img", "image_details.txt");
-  private static Path notificationsPath = Paths.get(
-    "data",
-    "notifications.txt"
-  );
-  private static StringBuilder newContent = new StringBuilder();
-  private static boolean updated = false;
-  private String currentUser = "";
-  private static String imageOwner = "";
-  private static String comment = "";
-  private static String timestamp = LocalDateTime
-    .now()
-    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    private static String currentUser = "";
+    private static String timestamp = LocalDateTime
+        .now()
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-  public ImageLikesManager(String currentUser) {
-    this.currentUser = currentUser;
-  }
-
-  public void handleLikeAction(String imageId, JLabel likesLabel) {
-    if (alreadyLiked(imageId, currentUser)) return;
-    currentUser = retrieveUser();
-    // imageOwner = retrieveImageOwner();
-    updateImageDetails(imageId, likesLabel);
-    updateNotifications(imageId, comment);
-  }
-
-  public boolean alreadyLiked(String imageId, String currentUser) {
-    try (BufferedReader reader = Files.newBufferedReader(notificationsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains(imageId) && line.contains(currentUser)) return true;
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
+    public ImageLikesManager(String currentUser) {
+        this.currentUser = currentUser;
     }
-    return false;
-  }
 
-  public String retrieveUser() {
-    try (
-      BufferedReader userReader = Files.newBufferedReader(
-        Paths.get("data", "users.txt")
-      )
-    ) {
-      String line = userReader.readLine();
-      if (line != null) {
-        currentUser = line.split(":")[0].trim();
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
+    public void handleLikeAction(String imageId, JLabel likesLabel) {
+        if (alreadyLiked(imageId, currentUser)) return;
+        currentUser = retrieveUser();
+        UpdateDatabase.updateLikes(imageId, currentUser);
+        updateImageDetails(imageId, likesLabel);
     }
-    return currentUser;
-  }
 
-  public void updateImageDetails(String imageId, JLabel likesLabel) {
-    updated = false;
-
-    // Clear newContent StringBuilder
-    newContent.setLength(0);
-
-    // Read and update image_details.txt
-    try (BufferedReader reader = Files.newBufferedReader(detailsPath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains("ImageID: " + imageId)) {
-          String[] parts = line.split(", ");
-          imageOwner = parts[1].split(": ")[1];
-          int likes = Integer.parseInt(parts[4].split(": ")[1]);
-          likes++; // Increment the likes count
-          parts[4] = "Likes: " + likes;
-          line = String.join(", ", parts);
-
-          // Update the UI
-          likesLabel.setText("Likes: " + likes);
-          updated = true;
+    public boolean alreadyLiked(String imageId, String currentUser) {
+        String query = "SELECT 1 FROM likes WHERE post_id = ? AND liker = ?";
+        try (Connection conn = UpdateDatabase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, imageId);
+            pstmt.setString(2, currentUser);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        newContent.append(line).append("\n");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
+        return false;
     }
 
-    // Write updated likes back to image_details.txt
-    if (updated) {
-      try (BufferedWriter writer = Files.newBufferedWriter(detailsPath)) {
-        writer.write(newContent.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    public String retrieveUser() {
+        try (BufferedReader userReader = Files.newBufferedReader(
+            Paths.get("data", "users.txt")
+        )) {
+            String line = userReader.readLine();
+            if (line != null) {
+                currentUser = line.split(":")[0].trim();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return currentUser;
     }
-  }
 
-  public void updateNotifications(String imageId, String comment) {
-    String notification = String.format(
-      "%s; %s; %s; %s\n",
-      imageOwner,
-      currentUser,
-      imageId,
-      timestamp
-    );
-    try (
-      BufferedWriter notificationWriter = Files.newBufferedWriter(
-        Paths.get("data", "notifications.txt"),
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND
-      )
-    ) {
-      notificationWriter.write(notification);
-    } catch (IOException e) {
-      e.printStackTrace();
+    public int getLikesCount(String imageId) {
+        int likesCount = 0;
+        String query = "SELECT COUNT(*) AS likes_count FROM likes WHERE post_id = ?";
+        try (Connection conn = UpdateDatabase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, imageId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                likesCount = rs.getInt("likes_count");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return likesCount;
     }
-  }
+
+    public void updateImageDetails(String imageId, JLabel likesLabel) {
+        int likes = getLikesCount(imageId);
+        likesLabel.setText("Likes: " + likes);
+    }
+
+    public static String retrieveImageOwner(String imageId) {
+        String owner = "";
+        String query = "SELECT owner FROM posts WHERE post_id = ?";
+        try (Connection conn = UpdateDatabase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, imageId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                owner = rs.getString("owner");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return owner;
+    }
 }
