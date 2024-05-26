@@ -385,7 +385,7 @@ public class DatabaseUploader {
 
   public String[] getPostDetails(String postId) {
     String query =
-      "SELECT user_id, caption, like_count, timestamp FROM posts WHERE post_id = ?";
+      "SELECT user_id, caption, timestamp FROM posts WHERE post_id = ?";
     String[] postDetails = new String[4];
 
     try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
@@ -394,7 +394,7 @@ public class DatabaseUploader {
         if (resultSet.next()) {
           postDetails[0] = resultSet.getString("user_id");
           postDetails[1] = resultSet.getString("caption");
-          postDetails[2] = resultSet.getString("like_count");
+          postDetails[2] = Integer.toString(getLikeCount(postId));
           postDetails[3] = resultSet.getString("timestamp");
         }
       }
